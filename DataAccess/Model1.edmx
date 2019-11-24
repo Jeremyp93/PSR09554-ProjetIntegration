@@ -1,0 +1,351 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ExamenProjetIntegrationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Cours">
+          <Key>
+            <PropertyRef Name="COURS_id" />
+          </Key>
+          <Property Name="COURS_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="COURS_debut" Type="datetime" Nullable="false" />
+          <Property Name="COURS_fin" Type="datetime" Nullable="false" />
+          <Property Name="COURS_NombreDePlaces" Type="int" Nullable="false" />
+          <Property Name="TYPECOURS_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="NIVEAU_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PROFESSEUR_id" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Niveau">
+          <Key>
+            <PropertyRef Name="NIVEAU_id" />
+          </Key>
+          <Property Name="NIVEAU_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="NIVEAU_libelle" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="NIVEAU_Couleur" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Professeur">
+          <Key>
+            <PropertyRef Name="PROFESSEUR_id" />
+          </Key>
+          <Property Name="PROFESSEUR_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PROFESSEUR_prenom" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PROFESSEUR_nom" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TypeCours">
+          <Key>
+            <PropertyRef Name="TYPECOURS_id" />
+          </Key>
+          <Property Name="TYPECOURS_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TYPECOURS_libelle" Type="nvarchar" MaxLength="55" Nullable="false" />
+          <Property Name="TYPECOURS_discipline" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK_Cours_Niveau">
+          <End Role="Niveau" Type="Self.Niveau" Multiplicity="1" />
+          <End Role="Cours" Type="Self.Cours" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Niveau">
+              <PropertyRef Name="NIVEAU_id" />
+            </Principal>
+            <Dependent Role="Cours">
+              <PropertyRef Name="NIVEAU_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cours_Professeur">
+          <End Role="Professeur" Type="Self.Professeur" Multiplicity="1" />
+          <End Role="Cours" Type="Self.Cours" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Professeur">
+              <PropertyRef Name="PROFESSEUR_id" />
+            </Principal>
+            <Dependent Role="Cours">
+              <PropertyRef Name="PROFESSEUR_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cours_TypeCours">
+          <End Role="TypeCours" Type="Self.TypeCours" Multiplicity="1" />
+          <End Role="Cours" Type="Self.Cours" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeCours">
+              <PropertyRef Name="TYPECOURS_id" />
+            </Principal>
+            <Dependent Role="Cours">
+              <PropertyRef Name="TYPECOURS_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="GetAllCours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetFiltre" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="typecours" Type="varchar" Mode="In" />
+          <Parameter Name="typediscipline" Type="varchar" Mode="In" />
+          <Parameter Name="niveau" Type="varchar" Mode="In" />
+          <Parameter Name="date" Type="date" Mode="In" />
+        </Function>
+        <Function Name="GetFiltreDetail" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <EntityContainer Name="ExamenProjetIntegrationModelStoreContainer">
+          <EntitySet Name="Cours" EntityType="Self.Cours" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Niveau" EntityType="Self.Niveau" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Professeur" EntityType="Self.Professeur" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TypeCours" EntityType="Self.TypeCours" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Cours_Niveau" Association="Self.FK_Cours_Niveau">
+            <End Role="Niveau" EntitySet="Niveau" />
+            <End Role="Cours" EntitySet="Cours" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cours_Professeur" Association="Self.FK_Cours_Professeur">
+            <End Role="Professeur" EntitySet="Professeur" />
+            <End Role="Cours" EntitySet="Cours" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cours_TypeCours" Association="Self.FK_Cours_TypeCours">
+            <End Role="TypeCours" EntitySet="TypeCours" />
+            <End Role="Cours" EntitySet="Cours" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ExamenProjetIntegrationModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Cour">
+          <Key>
+            <PropertyRef Name="COURS_id" />
+          </Key>
+          <Property Name="COURS_id" Type="Guid" Nullable="false" />
+          <Property Name="COURS_debut" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="COURS_fin" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="COURS_NombreDePlaces" Type="Int32" Nullable="false" />
+          <Property Name="TYPECOURS_id" Type="Guid" Nullable="false" />
+          <Property Name="NIVEAU_id" Type="Guid" Nullable="false" />
+          <Property Name="PROFESSEUR_id" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Niveau" Relationship="Self.FK_Cours_Niveau" FromRole="Cours" ToRole="Niveau" />
+          <NavigationProperty Name="Professeur" Relationship="Self.FK_Cours_Professeur" FromRole="Cours" ToRole="Professeur" />
+          <NavigationProperty Name="TypeCour" Relationship="Self.FK_Cours_TypeCours" FromRole="Cours" ToRole="TypeCours" />
+        </EntityType>
+        <EntityType Name="Niveau">
+          <Key>
+            <PropertyRef Name="NIVEAU_id" />
+          </Key>
+          <Property Name="NIVEAU_id" Type="Guid" Nullable="false" />
+          <Property Name="NIVEAU_libelle" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="NIVEAU_Couleur" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Cours" Relationship="Self.FK_Cours_Niveau" FromRole="Niveau" ToRole="Cours" />
+        </EntityType>
+        <EntityType Name="Professeur">
+          <Key>
+            <PropertyRef Name="PROFESSEUR_id" />
+          </Key>
+          <Property Name="PROFESSEUR_id" Type="Guid" Nullable="false" />
+          <Property Name="PROFESSEUR_prenom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PROFESSEUR_nom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Cours" Relationship="Self.FK_Cours_Professeur" FromRole="Professeur" ToRole="Cours" />
+        </EntityType>
+        <EntityType Name="TypeCour">
+          <Key>
+            <PropertyRef Name="TYPECOURS_id" />
+          </Key>
+          <Property Name="TYPECOURS_id" Type="Guid" Nullable="false" />
+          <Property Name="TYPECOURS_libelle" Type="String" MaxLength="55" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TYPECOURS_discipline" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Cours" Relationship="Self.FK_Cours_TypeCours" FromRole="TypeCours" ToRole="Cours" />
+        </EntityType>
+        <Association Name="FK_Cours_Niveau">
+          <End Role="Niveau" Type="Self.Niveau" Multiplicity="1" />
+          <End Role="Cours" Type="Self.Cour" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Niveau">
+              <PropertyRef Name="NIVEAU_id" />
+            </Principal>
+            <Dependent Role="Cours">
+              <PropertyRef Name="NIVEAU_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cours_Professeur">
+          <End Role="Professeur" Type="Self.Professeur" Multiplicity="1" />
+          <End Role="Cours" Type="Self.Cour" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Professeur">
+              <PropertyRef Name="PROFESSEUR_id" />
+            </Principal>
+            <Dependent Role="Cours">
+              <PropertyRef Name="PROFESSEUR_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cours_TypeCours">
+          <End Role="TypeCours" Type="Self.TypeCour" Multiplicity="1" />
+          <End Role="Cours" Type="Self.Cour" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeCours">
+              <PropertyRef Name="TYPECOURS_id" />
+            </Principal>
+            <Dependent Role="Cours">
+              <PropertyRef Name="TYPECOURS_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ExamenProjetIntegrationEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Cours" EntityType="Self.Cour" />
+          <EntitySet Name="Niveaux" EntityType="Self.Niveau" />
+          <EntitySet Name="Professeurs" EntityType="Self.Professeur" />
+          <EntitySet Name="TypeCours" EntityType="Self.TypeCour" />
+          <AssociationSet Name="FK_Cours_Niveau" Association="Self.FK_Cours_Niveau">
+            <End Role="Niveau" EntitySet="Niveaux" />
+            <End Role="Cours" EntitySet="Cours" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cours_Professeur" Association="Self.FK_Cours_Professeur">
+            <End Role="Professeur" EntitySet="Professeurs" />
+            <End Role="Cours" EntitySet="Cours" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cours_TypeCours" Association="Self.FK_Cours_TypeCours">
+            <End Role="TypeCours" EntitySet="TypeCours" />
+            <End Role="Cours" EntitySet="Cours" />
+          </AssociationSet>
+          <FunctionImport Name="GetAllCours" ReturnType="Collection(ExamenProjetIntegrationModel.GetAllCours_Result)" />
+          <FunctionImport Name="GetFiltre" ReturnType="Collection(ExamenProjetIntegrationModel.GetFiltre_Result)">
+            <Parameter Name="typecours" Mode="In" Type="String" />
+            <Parameter Name="typediscipline" Mode="In" Type="String" />
+            <Parameter Name="niveau" Mode="In" Type="String" />
+            <Parameter Name="date" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="GetFiltreDetail" ReturnType="Collection(ExamenProjetIntegrationModel.GetFiltreDetail_Result)">
+          <Parameter Name="id" Mode="In" Type="Guid" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="GetAllCours_Result">
+          <Property Type="String" Name="Titre" Nullable="true" MaxLength="108" />
+          <Property Type="String" Name="Description" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Professeur" Nullable="false" MaxLength="101" />
+          <Property Type="DateTime" Name="COURS_debut" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="COURS_fin" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="COURS_NombreDePlaces" Nullable="false" />
+          <Property Type="String" Name="NIVEAU_couleur" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="GetFiltre_Result">
+          <Property Type="Guid" Name="COURS_id" Nullable="false" />
+          <Property Type="DateTime" Name="COURS_debut" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="COURS_fin" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="COURS_NombreDePlaces" Nullable="false" />
+          <Property Type="String" Name="cours" Nullable="true" MaxLength="108" />
+          <Property Type="String" Name="NIVEAU_libelle" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PROFESSEUR_prenom" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PROFESSEUR_nom" Nullable="false" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="GetFiltreDetail_Result">
+          <Property Type="DateTime" Name="COURS_debut" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="COURS_fin" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="COURS_NombreDePlaces" Nullable="false" />
+          <Property Type="String" Name="PROFESSEUR_prenom" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PROFESSEUR_nom" Nullable="false" MaxLength="50" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ExamenProjetIntegrationModelStoreContainer" CdmEntityContainer="ExamenProjetIntegrationEntities">
+          <EntitySetMapping Name="Cours">
+            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.Cour">
+              <MappingFragment StoreEntitySet="Cours">
+                <ScalarProperty Name="COURS_id" ColumnName="COURS_id" />
+                <ScalarProperty Name="COURS_debut" ColumnName="COURS_debut" />
+                <ScalarProperty Name="COURS_fin" ColumnName="COURS_fin" />
+                <ScalarProperty Name="COURS_NombreDePlaces" ColumnName="COURS_NombreDePlaces" />
+                <ScalarProperty Name="TYPECOURS_id" ColumnName="TYPECOURS_id" />
+                <ScalarProperty Name="NIVEAU_id" ColumnName="NIVEAU_id" />
+                <ScalarProperty Name="PROFESSEUR_id" ColumnName="PROFESSEUR_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Niveaux">
+            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.Niveau">
+              <MappingFragment StoreEntitySet="Niveau">
+                <ScalarProperty Name="NIVEAU_id" ColumnName="NIVEAU_id" />
+                <ScalarProperty Name="NIVEAU_libelle" ColumnName="NIVEAU_libelle" />
+                <ScalarProperty Name="NIVEAU_Couleur" ColumnName="NIVEAU_Couleur" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Professeurs">
+            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.Professeur">
+              <MappingFragment StoreEntitySet="Professeur">
+                <ScalarProperty Name="PROFESSEUR_id" ColumnName="PROFESSEUR_id" />
+                <ScalarProperty Name="PROFESSEUR_prenom" ColumnName="PROFESSEUR_prenom" />
+                <ScalarProperty Name="PROFESSEUR_nom" ColumnName="PROFESSEUR_nom" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TypeCours">
+            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.TypeCour">
+              <MappingFragment StoreEntitySet="TypeCours">
+                <ScalarProperty Name="TYPECOURS_id" ColumnName="TYPECOURS_id" />
+                <ScalarProperty Name="TYPECOURS_libelle" ColumnName="TYPECOURS_libelle" />
+                <ScalarProperty Name="TYPECOURS_discipline" ColumnName="TYPECOURS_discipline" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetAllCours" FunctionName="ExamenProjetIntegrationModel.Store.GetAllCours">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetAllCours_Result">
+                <ScalarProperty Name="Titre" ColumnName="Titre" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Professeur" ColumnName="Professeur" />
+                <ScalarProperty Name="COURS_debut" ColumnName="COURS_debut" />
+                <ScalarProperty Name="COURS_fin" ColumnName="COURS_fin" />
+                <ScalarProperty Name="COURS_NombreDePlaces" ColumnName="COURS_NombreDePlaces" />
+                <ScalarProperty Name="NIVEAU_couleur" ColumnName="NIVEAU_couleur" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetFiltre" FunctionName="ExamenProjetIntegrationModel.Store.GetFiltre">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetFiltre_Result">
+                <ScalarProperty Name="COURS_id" ColumnName="COURS_id" />
+                <ScalarProperty Name="COURS_debut" ColumnName="COURS_debut" />
+                <ScalarProperty Name="COURS_fin" ColumnName="COURS_fin" />
+                <ScalarProperty Name="COURS_NombreDePlaces" ColumnName="COURS_NombreDePlaces" />
+                <ScalarProperty Name="cours" ColumnName="cours" />
+                <ScalarProperty Name="NIVEAU_libelle" ColumnName="NIVEAU_libelle" />
+                <ScalarProperty Name="PROFESSEUR_prenom" ColumnName="PROFESSEUR_prenom" />
+                <ScalarProperty Name="PROFESSEUR_nom" ColumnName="PROFESSEUR_nom" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetFiltreDetail" FunctionName="ExamenProjetIntegrationModel.Store.GetFiltreDetail">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetFiltreDetail_Result">
+                <ScalarProperty Name="COURS_debut" ColumnName="COURS_debut" />
+                <ScalarProperty Name="COURS_fin" ColumnName="COURS_fin" />
+                <ScalarProperty Name="COURS_NombreDePlaces" ColumnName="COURS_NombreDePlaces" />
+                <ScalarProperty Name="PROFESSEUR_prenom" ColumnName="PROFESSEUR_prenom" />
+                <ScalarProperty Name="PROFESSEUR_nom" ColumnName="PROFESSEUR_nom" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

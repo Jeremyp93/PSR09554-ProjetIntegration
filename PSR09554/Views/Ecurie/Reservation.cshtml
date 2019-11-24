@@ -1,0 +1,199 @@
+﻿@using Helpers
+
+@{
+    ViewBag.Title = "Reservation";
+}
+
+<link rel="stylesheet" href="~/Content/jquery.steps.css" />
+<link rel="stylesheet" href="~/Content/main.css" />
+<link rel="stylesheet" href="~/Content/normalize.css" />
+
+<form id="reservation-form" action="#">
+    <div>
+        <h3>Reservation</h3>
+        <section>
+            <p>Vous allez débuter la procédure de réservation afin de participer à un cours dans l'ecurie 'Chez Jeremy'.</p>
+            <p>Veuillez suivre les instructions, uniquement quand vous aurez appuyer sur le bouton 'Reserver' la reservation sera faite.<br />Vous devriez recevoir un mail de confirmation également.</p>
+            <p>Si toutefois vous avez des questions ou un soucis lors de la réservation n'hesitez pas à nous contacter à l'addresse : info@scotex.be</p>
+        </section>
+        <h3>Cours</h3>
+        <section>
+            <label for="typeCours">A quelle cours souhaitez-vous participer ?</label><br />
+            <select id="typeCours" name="typeCours">
+                <option value="Collectif">Collectif</option>
+                <option value="Individuel">Individuel</option>
+                <option value="Randonnee">Randonnée</option>
+            </select><br /><br />
+            <label for="typeDiscipline">Discipline : </label><br />
+            <select id="typeDiscipline" name="typeCours">
+                <option value="Dressage">Dressage</option>
+                <option value="Obstacle">Obstacle</option>
+            </select><br /><br />
+            <label for="niveau">Quel est votre niveau?</label><br />
+            <select id="niveau" name="niveau">
+                <option value="Debutant">Débutant</option>
+                <option value="Moyen">Intermdiaire</option>
+                <option value="Confirme">Confirmé</option>
+            </select><br /><br />
+            <label for="date">Quand souhaitez-vous suivre un cours ? *</label>
+            <input type="date" name="date" id="date" class="required"><br />
+            <input id="btnLookUp" class="btn btn-primary" type="button" value="Recherche de cours" , onclick="LookUp();" />
+            <p id="alert" style="color: red"></p>
+            <p class="coursTrouve">Voici la liste des cours disponibles ce jour la. Veuillez-selectionnez celui qui vous convient !</p>
+                <div class="row coursTrouve">
+                    <div class="col-md-4 coursTrouve">
+                        <select id="cours" name="cours" size="5" class="required coursTrouve"></select>
+                    </div>
+                    <div class="col-md-4 coursTrouve">
+                        <p class="coursTrouve">
+                            Debut du cours : <span id="debutCours"></span><br />
+                            Fin du cours : <span id="finCours"></span><br />
+                            Nombre de places disponnibles : <span id="place"></span><br />
+                            Professeur : <span id="professeur"></span>
+                        </p>
+                    </div>
+                </div>
+        </section>
+        <h3>Cours</h3>
+        <section>
+            <label for="name">First name *</label>
+            <input id="name" name="name" type="text" class="required">
+            <label for="surname">Last name *</label>
+            <input id="surname" name="surname" type="text" class="required">
+            <label for="email">Email *</label>
+            <input id="email" name="email" type="text" class="required email">
+            <label for="address">Address</label>
+            <input id="address" name="address" type="text">
+            <p>(*) Mandatory</p>
+        </section>
+        <h3>Cheval</h3>
+        <section></section>
+        <h3>Récapitulation</h3>
+        <section>
+            <input id="acceptTerms" name="acceptTerms" type="checkbox" class="required"> <label for="acceptTerms">I agree with the Terms and Conditions.</label>
+        </section>
+    </div>
+</form>
+
+@{
+    var path = CUtil.GetValueBaseOnKey("apiBaseUrl");
+    var gamePath = path + CUtil.GetValueBaseOnKey("GameUrl");
+}
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery.steps.js"></script>
+<script src="~/Scripts/jquery.steps.min.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#date').change(function() {
+            if (!Date.parse($('#date').val()))
+                $('#btnLookUp').prop('disabled', true);
+            else
+                $('#btnLookUp').prop('disabled', false);
+        });
+        $('#btnLookUp').prop('disabled', true);
+
+        $('#cours').change(function () {
+            GetInfo();
+            if ($('#cours option').is(':selected')) {
+
+            }
+        });
+        $('.coursTrouve').hide();
+    });
+
+    var form = $("#reservation-form");
+    form.validate({
+        errorPlacement: function errorPlacement(error, element) { element.before(error); },
+        rules: {
+            confirm: {
+                equalTo: "#password"
+            }
+        }
+    });
+
+    form.children("div").steps({
+        headerTag: "h3",
+        bodyTag: "section",
+        transitionEffect: "slideLeft",
+        onStepChanging: function (event, currentIndex, newIndex) {
+            if (currentIndex > newIndex)
+            {
+                return true;
+            }
+            form.validate().settings.ignore = ":disabled, :hidden";
+            return form.valid();
+        },
+        onFinishing: function (event, currentIndex) {
+            form.validate().settings.ignore = ":disabled";
+            return form.valid();
+        },
+        onFinished: function (event, currentIndex) {
+            alert("Submitted!");
+        }
+    });
+
+    function LookUp() {
+        var myjson = {
+            typeCours: $('#typeCours').val(),
+            typediscipline: $('#typeDiscipline').val(),
+            niveau: $('#niveau').val(),
+            date: new Date($('#date').val()),
+        };
+        $('#cours')
+                .find('option')
+                .remove()
+                .end()
+            ;
+        $.ajax({
+            url: '@gamePath' + 'CoursFiltre',
+            type: 'POST',
+            data: JSON.stringify(myjson),
+            dataType: 'json',
+            async: false,
+            contentType: 'application/json',
+            success: function (data) {
+                if (!jQuery.isEmptyObject(data)) {
+                    $('#alert').text("");
+                    $.each(data, function (index, value) {
+                        $('#cours').append($('<option>').text(value.cours).val(value.id));
+                    });
+                    $('.coursTrouve').show();
+                }
+                else
+                {
+                    $('.coursTrouve').hide();
+                    $('#debutCours').text("");
+                    $('#finCours').text("");
+                    $('#place').text("");
+                    $('#professeur').text("");
+                    $('#alert').text("Aucun cours n'a été trouvé selon vos critères de recherches");
+                }
+            },
+            error: function(data) {
+                alert('failed');
+            }
+        });
+    }
+
+    function GetInfo() {
+        var id = $('#cours').val();
+        $.ajax({
+            url: '@gamePath' + 'CoursFiltreDetail?id=' + id,
+            type: 'GET',
+            success: function (data) {
+                console.log(data.coursDebut);
+                $('#debutCours').text(data[0].coursDebut.split("T")[1]);
+                $('#finCours').text(data[0].coursFin.split("T")[1]);
+                $('#place').text(data[0].nombrePlaces);
+                $('#professeur').text(data[0].professeurPrenom + " " + data[0].professeurNom);
+            },
+            error: function(data) {
+                alert('failed');
+            }
+        });
+    }
+</script>
+
