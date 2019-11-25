@@ -40,19 +40,19 @@
             <input id="btnLookUp" class="btn btn-primary" type="button" value="Recherche de cours" , onclick="LookUp();" />
             <p id="alert" style="color: red"></p>
             <p class="coursTrouve">Voici la liste des cours disponibles ce jour la. Veuillez-selectionnez celui qui vous convient !</p>
-                <div class="row coursTrouve">
-                    <div class="col-md-4 coursTrouve">
-                        <select id="cours" name="cours" size="5" class="required coursTrouve"></select>
-                    </div>
-                    <div class="col-md-4 coursTrouve">
-                        <p class="coursTrouve">
-                            Debut du cours : <span id="debutCours"></span><br />
-                            Fin du cours : <span id="finCours"></span><br />
-                            Nombre de places disponnibles : <span id="place"></span><br />
-                            Professeur : <span id="professeur"></span>
-                        </p>
-                    </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <select id="cours" name="cours" size="5" class="required"></select>
                 </div>
+                <div class="col-md-4 coursTrouve">
+                    <p class="coursTrouve">
+                        Debut du cours : <span id="debutCours"></span><br />
+                        Fin du cours : <span id="finCours"></span><br />
+                        Nombre de places disponnibles : <span id="place"></span><br />
+                        Professeur : <span id="professeur"></span>
+                    </p>
+                </div>
+            </div>
         </section>
         <h3>Cours</h3>
         <section>
@@ -102,6 +102,7 @@
             }
         });
         $('.coursTrouve').hide();
+        $('#name').hide();
     });
 
     var form = $("#reservation-form");
@@ -118,6 +119,15 @@
         headerTag: "h3",
         bodyTag: "section",
         transitionEffect: "slideLeft",
+        labels:
+        {
+            current: "Etape actuelle",
+            pagnation: "Pagination",
+            finish: "Confirmer",
+            next: "Suivant",
+            previous: "Précedent",
+            loading: "Chargement ..."
+        },
         onStepChanging: function (event, currentIndex, newIndex) {
             if (currentIndex > newIndex)
             {
