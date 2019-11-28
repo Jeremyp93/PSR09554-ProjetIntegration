@@ -27,6 +27,7 @@ namespace PSR09554.Controllers
             return new JsonResult{Data = events, JsonRequestBehavior = JsonRequestBehavior.AllowGet};
         }
 
+        [Authorize]
         public ActionResult Reservation()
         {
             return View();

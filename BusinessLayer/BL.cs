@@ -87,7 +87,8 @@ namespace BusinessLayer
             }
         }
 
-        public static List<CoursFiltreModel> getAllCoursFiltre(string typecours, string typediscipline, string niveau, DateTime date)
+        public static List<CoursFiltreModel> getAllCoursFiltre(string typecours, string typediscipline, string niveau,
+            DateTime date)
         {
             try
             {
@@ -144,6 +145,110 @@ namespace BusinessLayer
                 }
 
                 return lstToReturn;
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
+
+        public static List<ChevauxFiltreModel> getChevauxFiltre(string typecours, string typediscipline, string niveau,
+            Guid id)
+        {
+            try
+            {
+                var lstToReturn = new List<ChevauxFiltreModel>();
+                foreach (var cheval in Data.GetChevauxFiltre(typecours, typediscipline, niveau, id))
+                {
+                    lstToReturn.Add(new ChevauxFiltreModel
+                    {
+                        id = cheval.CHEVAL_id,
+                        nom = cheval.CHEVAL_nom
+                    });
+                }
+
+                return lstToReturn;
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
+
+        public static void addReservation(Guid idUser, Guid idCours, Guid idCheval)
+        {
+            try
+            {
+                Data.AddReservation(idUser, idCours, idCheval);
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
+
+        public static void updateCoursParticipant(Guid idCours)
+        {
+            try
+            {
+                Data.UpdateCoursParticipant(idCours);
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
+
+        public static Guid getIdCheval(string nom)
+        {
+            try
+            {
+                var guidToReturn = Data.GetIdCheval(nom);
+                return guidToReturn;
             }
             catch (Exception e)
             {

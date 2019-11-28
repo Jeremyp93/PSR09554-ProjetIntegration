@@ -31,6 +31,8 @@ namespace DataAccess
         public virtual DbSet<Niveau> Niveaux { get; set; }
         public virtual DbSet<Professeur> Professeurs { get; set; }
         public virtual DbSet<TypeCour> TypeCours { get; set; }
+        public virtual DbSet<Cheval> Chevals { get; set; }
+        public virtual DbSet<Reservation> Reservations { get; set; }
     
         public virtual ObjectResult<GetAllCours_Result> GetAllCours()
         {
@@ -65,6 +67,53 @@ namespace DataAccess
                 new ObjectParameter("id", typeof(System.Guid));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetFiltreDetail_Result>("GetFiltreDetail", idParameter);
+        }
+    
+        public virtual ObjectResult<GetChevauxFiltre_Result> GetChevauxFiltre(string typecours, string typediscipline, string niveau, Nullable<System.Guid> idCours)
+        {
+            var typecoursParameter = typecours != null ?
+                new ObjectParameter("typecours", typecours) :
+                new ObjectParameter("typecours", typeof(string));
+    
+            var typedisciplineParameter = typediscipline != null ?
+                new ObjectParameter("typediscipline", typediscipline) :
+                new ObjectParameter("typediscipline", typeof(string));
+    
+            var niveauParameter = niveau != null ?
+                new ObjectParameter("niveau", niveau) :
+                new ObjectParameter("niveau", typeof(string));
+    
+            var idCoursParameter = idCours.HasValue ?
+                new ObjectParameter("idCours", idCours) :
+                new ObjectParameter("idCours", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetChevauxFiltre_Result>("GetChevauxFiltre", typecoursParameter, typedisciplineParameter, niveauParameter, idCoursParameter);
+        }
+    
+        public virtual int AddReservation(Nullable<System.Guid> idUser, Nullable<System.Guid> idCours, Nullable<System.Guid> idCheval)
+        {
+            var idUserParameter = idUser.HasValue ?
+                new ObjectParameter("idUser", idUser) :
+                new ObjectParameter("idUser", typeof(System.Guid));
+    
+            var idCoursParameter = idCours.HasValue ?
+                new ObjectParameter("idCours", idCours) :
+                new ObjectParameter("idCours", typeof(System.Guid));
+    
+            var idChevalParameter = idCheval.HasValue ?
+                new ObjectParameter("idCheval", idCheval) :
+                new ObjectParameter("idCheval", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddReservation", idUserParameter, idCoursParameter, idChevalParameter);
+        }
+    
+        public virtual int UpdateCoursParticipant(Nullable<System.Guid> idCours)
+        {
+            var idCoursParameter = idCours.HasValue ?
+                new ObjectParameter("idCours", idCours) :
+                new ObjectParameter("idCours", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UpdateCoursParticipant", idCoursParameter);
         }
     }
 }

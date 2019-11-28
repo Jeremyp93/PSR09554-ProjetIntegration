@@ -12,6 +12,10 @@
         <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cours_Niveau" ManuallyRouted="false" />
         <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cours_Professeur" ManuallyRouted="false" />
         <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cours_TypeCours" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.Cheval" Width="1.5" PointX="3" PointY="5.375" />
+        <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cheval_Niveau" />
+        <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cheval_TypeCours" />
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.Reservation" Width="1.5" PointX="5.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

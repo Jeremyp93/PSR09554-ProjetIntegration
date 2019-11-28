@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
+using System.Transactions;
+using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
+using System.Web.Security;
 using BusinessLayer;
 using PSR09554.API.Models;
+using Microsoft.AspNet.Identity;
 
 namespace PSR09554.API.Controllers
 {
@@ -39,6 +44,46 @@ namespace PSR09554.API.Controllers
                 return Json(events);
             }
             return NotFound();
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("v1/ecurie/ChevauxFiltre")]
+        public IHttpActionResult GetChevauxFiltre([FromUri] string id, [FromBody] FiltreModel filtre)
+        {
+            Guid idCours;
+            if (Guid.TryParse(id, out idCours))
+            {
+                var events = BL.getChevauxFiltre(filtre.typeCours, filtre.typediscipline, filtre.niveau, idCours);
+                return Json(events);
+            }
+            return NotFound();
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("v1/ecurie/AjouterReservation")]
+        public IHttpActionResult AddReservation([FromBody] ReservationNewModel reservation)
+        {
+            using (var txscope = new TransactionScope(TransactionScopeOption.RequiresNew))
+            {
+                try
+                {
+                    Guid idUser;
+                    if (Guid.TryParse("b14ec8f8-8122-4930-98e5-ef27e05ff66b", out idUser))
+                    {
+                        Guid idCheval = BL.getIdCheval(reservation.cheval);
+                        BL.addReservation(idUser, reservation.idCours, idCheval);
+                        BL.updateCoursParticipant(reservation.idCours);
+                        txscope.Complete();
+                        return Content(HttpStatusCode.Created, "Created");
+                    }
+                    return NotFound();
+                }
+                catch
+                {
+                    txscope.Dispose();
+                    return BadRequest();
+                }
+            }
         }
     }
 }

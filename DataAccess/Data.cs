@@ -43,5 +43,38 @@ namespace DataAccess
                 return lstToReturn;
             }
         }
+        public static List<GetChevauxFiltre_Result> GetChevauxFiltre(string typecours, string typediscipline, string niveau, Guid id)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                var lstToReturn = db.GetChevauxFiltre(typecours, typediscipline, niveau, id).ToList();
+                return lstToReturn;
+            }
+        }
+
+        public static void AddReservation(Guid idUser, Guid idCours, Guid idCheval)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                db.AddReservation(idUser, idCours, idCheval);
+            }
+        }
+
+        public static void UpdateCoursParticipant(Guid idCours)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                db.UpdateCoursParticipant(idCours);
+            }
+        }
+
+        public static Guid GetIdCheval(string nom)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                var guidToReturn = db.Chevals.FirstOrDefault(x => x.CHEVAL_nom == nom).CHEVAL_id;
+                return guidToReturn;
+            }
+        }
     }
 }

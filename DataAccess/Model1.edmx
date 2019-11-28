@@ -5,6 +5,15 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="ExamenProjetIntegrationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Cheval">
+          <Key>
+            <PropertyRef Name="CHEVAL_id" />
+          </Key>
+          <Property Name="CHEVAL_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CHEVAL_nom" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="TYPECOURS_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="NIVEAU_id" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
         <EntityType Name="Cours">
           <Key>
             <PropertyRef Name="COURS_id" />
@@ -33,6 +42,15 @@
           <Property Name="PROFESSEUR_prenom" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="PROFESSEUR_nom" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="Reservation">
+          <Key>
+            <PropertyRef Name="RESERVATION_id" />
+          </Key>
+          <Property Name="RESERVATION_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ASPNETUSERS_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="COURS_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CHEVAL_id" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
         <EntityType Name="TypeCours">
           <Key>
             <PropertyRef Name="TYPECOURS_id" />
@@ -41,6 +59,30 @@
           <Property Name="TYPECOURS_libelle" Type="nvarchar" MaxLength="55" Nullable="false" />
           <Property Name="TYPECOURS_discipline" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <Association Name="FK_Cheval_Niveau">
+          <End Role="Niveau" Type="Self.Niveau" Multiplicity="1" />
+          <End Role="Cheval" Type="Self.Cheval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Niveau">
+              <PropertyRef Name="NIVEAU_id" />
+            </Principal>
+            <Dependent Role="Cheval">
+              <PropertyRef Name="NIVEAU_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cheval_TypeCours">
+          <End Role="TypeCours" Type="Self.TypeCours" Multiplicity="1" />
+          <End Role="Cheval" Type="Self.Cheval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeCours">
+              <PropertyRef Name="TYPECOURS_id" />
+            </Principal>
+            <Dependent Role="Cheval">
+              <PropertyRef Name="TYPECOURS_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Cours_Niveau">
           <End Role="Niveau" Type="Self.Niveau" Multiplicity="1" />
           <End Role="Cours" Type="Self.Cours" Multiplicity="*" />
@@ -77,7 +119,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="AddReservation" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idUser" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="idCours" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="idCheval" Type="uniqueidentifier" Mode="In" />
+        </Function>
         <Function Name="GetAllCours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetChevauxFiltre" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="typecours" Type="varchar" Mode="In" />
+          <Parameter Name="typediscipline" Type="varchar" Mode="In" />
+          <Parameter Name="niveau" Type="varchar" Mode="In" />
+          <Parameter Name="idCours" Type="uniqueidentifier" Mode="In" />
+        </Function>
         <Function Name="GetFiltre" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="typecours" Type="varchar" Mode="In" />
           <Parameter Name="typediscipline" Type="varchar" Mode="In" />
@@ -87,11 +140,24 @@
         <Function Name="GetFiltreDetail" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="uniqueidentifier" Mode="In" />
         </Function>
+        <Function Name="UpdateCoursParticipant" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idCours" Type="uniqueidentifier" Mode="In" />
+        </Function>
         <EntityContainer Name="ExamenProjetIntegrationModelStoreContainer">
+          <EntitySet Name="Cheval" EntityType="Self.Cheval" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cours" EntityType="Self.Cours" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Niveau" EntityType="Self.Niveau" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Professeur" EntityType="Self.Professeur" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reservation" EntityType="Self.Reservation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TypeCours" EntityType="Self.TypeCours" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Cheval_Niveau" Association="Self.FK_Cheval_Niveau">
+            <End Role="Niveau" EntitySet="Niveau" />
+            <End Role="Cheval" EntitySet="Cheval" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cheval_TypeCours" Association="Self.FK_Cheval_TypeCours">
+            <End Role="TypeCours" EntitySet="TypeCours" />
+            <End Role="Cheval" EntitySet="Cheval" />
+          </AssociationSet>
           <AssociationSet Name="FK_Cours_Niveau" Association="Self.FK_Cours_Niveau">
             <End Role="Niveau" EntitySet="Niveau" />
             <End Role="Cours" EntitySet="Cours" />
@@ -132,6 +198,7 @@
           <Property Name="NIVEAU_libelle" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="NIVEAU_Couleur" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Cours" Relationship="Self.FK_Cours_Niveau" FromRole="Niveau" ToRole="Cours" />
+          <NavigationProperty Name="Chevals" Relationship="ExamenProjetIntegrationModel.FK_Cheval_Niveau" FromRole="Niveau" ToRole="Cheval" />
         </EntityType>
         <EntityType Name="Professeur">
           <Key>
@@ -150,6 +217,7 @@
           <Property Name="TYPECOURS_libelle" Type="String" MaxLength="55" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="TYPECOURS_discipline" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Cours" Relationship="Self.FK_Cours_TypeCours" FromRole="TypeCours" ToRole="Cours" />
+          <NavigationProperty Name="Chevals" Relationship="ExamenProjetIntegrationModel.FK_Cheval_TypeCours" FromRole="TypeCour" ToRole="Cheval" />
         </EntityType>
         <Association Name="FK_Cours_Niveau">
           <End Role="Niveau" Type="Self.Niveau" Multiplicity="1" />
@@ -214,6 +282,30 @@
           <FunctionImport Name="GetFiltreDetail" ReturnType="Collection(ExamenProjetIntegrationModel.GetFiltreDetail_Result)">
           <Parameter Name="id" Mode="In" Type="Guid" />
           </FunctionImport>
+          <EntitySet Name="Chevals" EntityType="ExamenProjetIntegrationModel.Cheval" />
+          <AssociationSet Name="FK_Cheval_Niveau" Association="ExamenProjetIntegrationModel.FK_Cheval_Niveau">
+            <End Role="Niveau" EntitySet="Niveaux" />
+            <End Role="Cheval" EntitySet="Chevals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cheval_TypeCours" Association="ExamenProjetIntegrationModel.FK_Cheval_TypeCours">
+            <End Role="TypeCour" EntitySet="TypeCours" />
+            <End Role="Cheval" EntitySet="Chevals" />
+          </AssociationSet>
+          <FunctionImport Name="GetChevauxFiltre" ReturnType="Collection(ExamenProjetIntegrationModel.GetChevauxFiltre_Result)">
+            <Parameter Name="typecours" Mode="In" Type="String" />
+            <Parameter Name="typediscipline" Mode="In" Type="String" />
+            <Parameter Name="niveau" Mode="In" Type="String" />
+            <Parameter Name="idCours" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <EntitySet Name="Reservations" EntityType="ExamenProjetIntegrationModel.Reservation" />
+          <FunctionImport Name="AddReservation">
+            <Parameter Name="idUser" Mode="In" Type="Guid" />
+            <Parameter Name="idCours" Mode="In" Type="Guid" />
+            <Parameter Name="idCheval" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="UpdateCoursParticipant">
+            <Parameter Name="idCours" Mode="In" Type="Guid" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GetAllCours_Result">
           <Property Type="String" Name="Titre" Nullable="true" MaxLength="108" />
@@ -241,6 +333,54 @@
           <Property Type="String" Name="PROFESSEUR_prenom" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="PROFESSEUR_nom" Nullable="false" MaxLength="50" />
         </ComplexType>
+        <EntityType Name="Cheval">
+          <Key>
+            <PropertyRef Name="CHEVAL_id" />
+          </Key>
+          <Property Name="CHEVAL_id" Type="Guid" Nullable="false" />
+          <Property Name="CHEVAL_nom" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TYPECOURS_id" Type="Guid" Nullable="false" />
+          <Property Name="NIVEAU_id" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Niveau" Relationship="ExamenProjetIntegrationModel.FK_Cheval_Niveau" FromRole="Cheval" ToRole="Niveau" />
+          <NavigationProperty Name="TypeCour" Relationship="ExamenProjetIntegrationModel.FK_Cheval_TypeCours" FromRole="Cheval" ToRole="TypeCour" />
+        </EntityType>
+        <Association Name="FK_Cheval_Niveau">
+          <End Type="ExamenProjetIntegrationModel.Niveau" Role="Niveau" Multiplicity="1" />
+          <End Type="ExamenProjetIntegrationModel.Cheval" Role="Cheval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Niveau">
+              <PropertyRef Name="NIVEAU_id" />
+            </Principal>
+            <Dependent Role="Cheval">
+              <PropertyRef Name="NIVEAU_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cheval_TypeCours">
+          <End Type="ExamenProjetIntegrationModel.TypeCour" Role="TypeCour" Multiplicity="1" />
+          <End Type="ExamenProjetIntegrationModel.Cheval" Role="Cheval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeCour">
+              <PropertyRef Name="TYPECOURS_id" />
+            </Principal>
+            <Dependent Role="Cheval">
+              <PropertyRef Name="TYPECOURS_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="GetChevauxFiltre_Result">
+          <Property Type="Guid" Name="CHEVAL_id" Nullable="false" />
+          <Property Type="String" Name="CHEVAL_nom" Nullable="false" MaxLength="50" />
+        </ComplexType>
+        <EntityType Name="Reservation">
+          <Key>
+            <PropertyRef Name="RESERVATION_id" />
+          </Key>
+          <Property Name="RESERVATION_id" Type="Guid" Nullable="false" />
+          <Property Name="ASPNETUSERS_id" Type="Guid" Nullable="false" />
+          <Property Name="COURS_id" Type="Guid" Nullable="false" />
+          <Property Name="CHEVAL_id" Type="Guid" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -325,6 +465,36 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="Chevals">
+            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.Cheval">
+              <MappingFragment StoreEntitySet="Cheval">
+                <ScalarProperty Name="NIVEAU_id" ColumnName="NIVEAU_id" />
+                <ScalarProperty Name="TYPECOURS_id" ColumnName="TYPECOURS_id" />
+                <ScalarProperty Name="CHEVAL_nom" ColumnName="CHEVAL_nom" />
+                <ScalarProperty Name="CHEVAL_id" ColumnName="CHEVAL_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetChevauxFiltre" FunctionName="ExamenProjetIntegrationModel.Store.GetChevauxFiltre">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetChevauxFiltre_Result">
+                <ScalarProperty Name="CHEVAL_id" ColumnName="CHEVAL_id" />
+                <ScalarProperty Name="CHEVAL_nom" ColumnName="CHEVAL_nom" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="Reservations">
+            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.Reservation">
+              <MappingFragment StoreEntitySet="Reservation">
+                <ScalarProperty Name="CHEVAL_id" ColumnName="CHEVAL_id" />
+                <ScalarProperty Name="COURS_id" ColumnName="COURS_id" />
+                <ScalarProperty Name="ASPNETUSERS_id" ColumnName="ASPNETUSERS_id" />
+                <ScalarProperty Name="RESERVATION_id" ColumnName="RESERVATION_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="AddReservation" FunctionName="ExamenProjetIntegrationModel.Store.AddReservation" />
+          <FunctionImportMapping FunctionImportName="UpdateCoursParticipant" FunctionName="ExamenProjetIntegrationModel.Store.UpdateCoursParticipant" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

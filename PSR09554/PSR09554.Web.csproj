@@ -212,6 +212,14 @@
     <Content Include="Images\Accueil1.jpg" />
     <Content Include="Images\Accueil2.jpg" />
     <Content Include="Images\Accueil3.jpg" />
+    <Content Include="Images\Chevaux\Caramel.jpg" />
+    <Content Include="Images\Chevaux\Frosties.jpg" />
+    <Content Include="Images\Chevaux\Indigo.jpg" />
+    <Content Include="Images\Chevaux\Isis.jpg" />
+    <Content Include="Images\Chevaux\Kasida.jpg" />
+    <Content Include="Images\Chevaux\Kovou.jpg" />
+    <Content Include="Images\Chevaux\Phil.jpg" />
+    <Content Include="Images\Chevaux\Siska.jpg" />
     <Content Include="Images\logo.png" />
     <Content Include="Images\logoN.png" />
     <Content Include="Scripts\bootstrap.js" />

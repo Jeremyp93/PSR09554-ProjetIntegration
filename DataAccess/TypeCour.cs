@@ -18,6 +18,7 @@ namespace DataAccess
         public TypeCour()
         {
             this.Cours = new HashSet<Cour>();
+            this.Chevals = new HashSet<Cheval>();
         }
     
         public System.Guid TYPECOURS_id { get; set; }
@@ -26,5 +27,7 @@ namespace DataAccess
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Cour> Cours { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Cheval> Chevals { get; set; }
     }
 }
