@@ -12,7 +12,7 @@ namespace PSR09554.API
         {
             // Web API configuration and services
             var corsAttr = new EnableCorsAttribute("*", "*", "*");
-            config.EnableCors(corsAttr);
+            //config.EnableCors(corsAttr);
 
             // Web API routes
             config.MapHttpAttributeRoutes();

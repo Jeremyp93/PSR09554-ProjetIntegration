@@ -26,11 +26,11 @@ namespace DataAccess
             }
         }
 
-        public static List<GetFiltre_Result> getFiltre(string typecours, string typediscipline, string niveau, DateTime date)
+        public static List<GetFiltre_Result> getFiltre(string typecours, string typediscipline, string niveau, DateTime date, string username)
         {
             using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
             {
-                var lstToReturn = db.GetFiltre(typecours, typediscipline, niveau, date).ToList();
+                var lstToReturn = db.GetFiltre(typecours, typediscipline, niveau, date, username).ToList();
                 return lstToReturn;
             }
         }
@@ -74,6 +74,15 @@ namespace DataAccess
             {
                 var guidToReturn = db.Chevals.FirstOrDefault(x => x.CHEVAL_nom == nom).CHEVAL_id;
                 return guidToReturn;
+            }
+        }
+
+        public static List<GetUser_Result> GetUserAPI(string username)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                var lstToReturn = db.GetUser(username).ToList();
+                return lstToReturn;
             }
         }
     }

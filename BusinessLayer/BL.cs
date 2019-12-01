@@ -88,12 +88,12 @@ namespace BusinessLayer
         }
 
         public static List<CoursFiltreModel> getAllCoursFiltre(string typecours, string typediscipline, string niveau,
-            DateTime date)
+            DateTime date, string username)
         {
             try
             {
                 var lstToReturn = new List<CoursFiltreModel>();
-                foreach (var filtre in Data.getFiltre(typecours, typediscipline, niveau, date))
+                foreach (var filtre in Data.getFiltre(typecours, typediscipline, niveau, date, username))
                 {
                     lstToReturn.Add(new CoursFiltreModel
                     {
@@ -249,6 +249,41 @@ namespace BusinessLayer
             {
                 var guidToReturn = Data.GetIdCheval(nom);
                 return guidToReturn;
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
+
+        public static List<AuthenticationModel> getUserAPI(string username)
+        {
+            try
+            {
+                var lstToReturn = new List<AuthenticationModel>();
+                foreach (var user in Data.GetUserAPI(username))
+                {
+                    lstToReturn.Add(new AuthenticationModel
+                    {
+                        id = user.Id,
+                        username = user.UserName,
+                        hash = user.PasswordHash,
+                        role = user.Name
+                    });
+                }
+
+                return lstToReturn;
             }
             catch (Exception e)
             {

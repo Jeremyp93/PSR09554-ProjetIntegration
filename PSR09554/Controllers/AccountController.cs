@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using Newtonsoft.Json;
 using PSR09554.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -68,6 +72,12 @@ namespace PSR09554.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            if (!String.IsNullOrEmpty(User.Identity.Name))
+            {
+                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                Session["TokenNumber"] = null;
+                return RedirectToAction("Login", "Account");
+            }
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -90,6 +100,7 @@ namespace PSR09554.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    await GetToken(model.Email, model.Password);
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -405,6 +416,7 @@ namespace PSR09554.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            Session["TokenNumber"] = null;
             return RedirectToAction("Index", "Home");
         }
 
@@ -414,6 +426,35 @@ namespace PSR09554.Controllers
         public ActionResult ExternalLoginFailure()
         {
             return View();
+        }
+
+        public async Task<ActionResult> GetToken(string username, string password)
+        {
+            string apiUrl = Helpers.CUtil.GetValueBaseOnKey("apiBaseUrl");
+            var resultContent = String.Empty;
+            TokenModel json = null;
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(apiUrl);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                var content = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("username", username),
+                    new KeyValuePair<string, string>("password", password),
+                    new KeyValuePair<string, string>("grant_type", "password")
+                });
+                var result = await client.PostAsync("/token", content);
+                if (result.IsSuccessStatusCode)
+                {
+                    resultContent = await result.Content.ReadAsStringAsync();
+
+                    json = JsonConvert.DeserializeObject<TokenModel>(resultContent);
+                    Session["TokenNumber"] = json.access_token;
+                }
+            }
+            return Content(json.access_token);
         }
 
         protected override void Dispose(bool disposing)

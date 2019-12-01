@@ -124,6 +124,12 @@
 
 <script>
     var chevalChoisi;
+    var token = '@ViewBag.Token'
+    var headers = {};
+    if (token) {
+        headers.Authorization = 'Bearer ' + token;
+    }
+
     $(document).ready(function () {
         $('#date').change(function() {
             if (!Date.parse($('#date').val()))
@@ -204,6 +210,7 @@
         $.ajax({
             url: '@ecuriePath' + 'CoursFiltre',
             type: 'POST',
+            headers: headers,
             data: JSON.stringify(myjson),
             dataType: 'json',
             async: false,
@@ -236,6 +243,7 @@
         var id = $('#cours').val();
         $.ajax({
             url: '@ecuriePath' + 'CoursFiltreDetail?id=' + id,
+            headers: headers,
             type: 'GET',
             success: function (data) {
                 console.log(data.coursDebut);
@@ -265,6 +273,7 @@
         $.ajax({
             url: '@ecuriePath' + 'ChevauxFiltre?id=' + id,
             type: 'POST',
+            headers: headers,
             data: JSON.stringify(myjson),
             dataType: 'json',
             async: false,
@@ -308,6 +317,7 @@
         $.ajax({
             url: '@ecuriePath' + 'AjouterReservation',
             type: 'POST',
+            headers: headers,
             data: JSON.stringify(myjson),
             dataType: 'json',
             async: false,

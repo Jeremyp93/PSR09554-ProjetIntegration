@@ -5,6 +5,38 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="ExamenProjetIntegrationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AspNetRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUserRoles">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="RoleId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" />
+          <Property Name="SecurityStamp" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
         <EntityType Name="Cheval">
           <Key>
             <PropertyRef Name="CHEVAL_id" />
@@ -119,6 +151,34 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+          <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetRoles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Function Name="AddReservation" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="idUser" Type="uniqueidentifier" Mode="In" />
           <Parameter Name="idCours" Type="uniqueidentifier" Mode="In" />
@@ -136,14 +196,21 @@
           <Parameter Name="typediscipline" Type="varchar" Mode="In" />
           <Parameter Name="niveau" Type="varchar" Mode="In" />
           <Parameter Name="date" Type="date" Mode="In" />
+          <Parameter Name="user" Type="varchar" Mode="In" />
         </Function>
         <Function Name="GetFiltreDetail" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="GetUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="name" Type="varchar" Mode="In" />
         </Function>
         <Function Name="UpdateCoursParticipant" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="idCours" Type="uniqueidentifier" Mode="In" />
         </Function>
         <EntityContainer Name="ExamenProjetIntegrationModelStoreContainer">
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cheval" EntityType="Self.Cheval" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cours" EntityType="Self.Cours" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Niveau" EntityType="Self.Niveau" Schema="dbo" store:Type="Tables" />
@@ -170,11 +237,56 @@
             <End Role="TypeCours" EntitySet="TypeCours" />
             <End Role="Cours" EntitySet="Cours" />
           </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ExamenProjetIntegrationModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AspNetRole">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AspNetUsers" Relationship="Self.AspNetUserRoles" FromRole="AspNetRoles" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="AspNetUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
+        </EntityType>
+        <EntityType Name="Cheval">
+          <Key>
+            <PropertyRef Name="CHEVAL_id" />
+          </Key>
+          <Property Name="CHEVAL_id" Type="Guid" Nullable="false" />
+          <Property Name="CHEVAL_nom" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TYPECOURS_id" Type="Guid" Nullable="false" />
+          <Property Name="NIVEAU_id" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Niveau" Relationship="Self.FK_Cheval_Niveau" FromRole="Cheval" ToRole="Niveau" />
+          <NavigationProperty Name="TypeCour" Relationship="Self.FK_Cheval_TypeCours" FromRole="Cheval" ToRole="TypeCours" />
+        </EntityType>
         <EntityType Name="Cour">
           <Key>
             <PropertyRef Name="COURS_id" />
@@ -197,8 +309,8 @@
           <Property Name="NIVEAU_id" Type="Guid" Nullable="false" />
           <Property Name="NIVEAU_libelle" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="NIVEAU_Couleur" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Chevals" Relationship="Self.FK_Cheval_Niveau" FromRole="Niveau" ToRole="Cheval" />
           <NavigationProperty Name="Cours" Relationship="Self.FK_Cours_Niveau" FromRole="Niveau" ToRole="Cours" />
-          <NavigationProperty Name="Chevals" Relationship="ExamenProjetIntegrationModel.FK_Cheval_Niveau" FromRole="Niveau" ToRole="Cheval" />
         </EntityType>
         <EntityType Name="Professeur">
           <Key>
@@ -209,6 +321,15 @@
           <Property Name="PROFESSEUR_nom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Cours" Relationship="Self.FK_Cours_Professeur" FromRole="Professeur" ToRole="Cours" />
         </EntityType>
+        <EntityType Name="Reservation">
+          <Key>
+            <PropertyRef Name="RESERVATION_id" />
+          </Key>
+          <Property Name="RESERVATION_id" Type="Guid" Nullable="false" />
+          <Property Name="ASPNETUSERS_id" Type="Guid" Nullable="false" />
+          <Property Name="COURS_id" Type="Guid" Nullable="false" />
+          <Property Name="CHEVAL_id" Type="Guid" Nullable="false" />
+        </EntityType>
         <EntityType Name="TypeCour">
           <Key>
             <PropertyRef Name="TYPECOURS_id" />
@@ -216,9 +337,33 @@
           <Property Name="TYPECOURS_id" Type="Guid" Nullable="false" />
           <Property Name="TYPECOURS_libelle" Type="String" MaxLength="55" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="TYPECOURS_discipline" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Chevals" Relationship="Self.FK_Cheval_TypeCours" FromRole="TypeCours" ToRole="Cheval" />
           <NavigationProperty Name="Cours" Relationship="Self.FK_Cours_TypeCours" FromRole="TypeCours" ToRole="Cours" />
-          <NavigationProperty Name="Chevals" Relationship="ExamenProjetIntegrationModel.FK_Cheval_TypeCours" FromRole="TypeCour" ToRole="Cheval" />
         </EntityType>
+        <Association Name="FK_Cheval_Niveau">
+          <End Role="Niveau" Type="Self.Niveau" Multiplicity="1" />
+          <End Role="Cheval" Type="Self.Cheval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Niveau">
+              <PropertyRef Name="NIVEAU_id" />
+            </Principal>
+            <Dependent Role="Cheval">
+              <PropertyRef Name="NIVEAU_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cheval_TypeCours">
+          <End Role="TypeCours" Type="Self.TypeCour" Multiplicity="1" />
+          <End Role="Cheval" Type="Self.Cheval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeCours">
+              <PropertyRef Name="TYPECOURS_id" />
+            </Principal>
+            <Dependent Role="Cheval">
+              <PropertyRef Name="TYPECOURS_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Cours_Niveau">
           <End Role="Niveau" Type="Self.Niveau" Multiplicity="1" />
           <End Role="Cours" Type="Self.Cour" Multiplicity="*" />
@@ -255,11 +400,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="AspNetUserRoles">
+          <End Role="AspNetRoles" Type="Self.AspNetRole" Multiplicity="*" />
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
+        </Association>
         <EntityContainer Name="ExamenProjetIntegrationEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
+          <EntitySet Name="Chevals" EntityType="Self.Cheval" />
           <EntitySet Name="Cours" EntityType="Self.Cour" />
           <EntitySet Name="Niveaux" EntityType="Self.Niveau" />
           <EntitySet Name="Professeurs" EntityType="Self.Professeur" />
+          <EntitySet Name="Reservations" EntityType="Self.Reservation" />
           <EntitySet Name="TypeCours" EntityType="Self.TypeCour" />
+          <AssociationSet Name="FK_Cheval_Niveau" Association="Self.FK_Cheval_Niveau">
+            <End Role="Niveau" EntitySet="Niveaux" />
+            <End Role="Cheval" EntitySet="Chevals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cheval_TypeCours" Association="Self.FK_Cheval_TypeCours">
+            <End Role="TypeCours" EntitySet="TypeCours" />
+            <End Role="Cheval" EntitySet="Chevals" />
+          </AssociationSet>
           <AssociationSet Name="FK_Cours_Niveau" Association="Self.FK_Cours_Niveau">
             <End Role="Niveau" EntitySet="Niveaux" />
             <End Role="Cours" EntitySet="Cours" />
@@ -272,39 +433,37 @@
             <End Role="TypeCours" EntitySet="TypeCours" />
             <End Role="Cours" EntitySet="Cours" />
           </AssociationSet>
+          <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <FunctionImport Name="AddReservation">
+            <Parameter Name="idUser" Mode="In" Type="Guid" />
+            <Parameter Name="idCours" Mode="In" Type="Guid" />
+            <Parameter Name="idCheval" Mode="In" Type="Guid" />
+          </FunctionImport>
           <FunctionImport Name="GetAllCours" ReturnType="Collection(ExamenProjetIntegrationModel.GetAllCours_Result)" />
-          <FunctionImport Name="GetFiltre" ReturnType="Collection(ExamenProjetIntegrationModel.GetFiltre_Result)">
-            <Parameter Name="typecours" Mode="In" Type="String" />
-            <Parameter Name="typediscipline" Mode="In" Type="String" />
-            <Parameter Name="niveau" Mode="In" Type="String" />
-            <Parameter Name="date" Mode="In" Type="DateTime" />
-          </FunctionImport>
-          <FunctionImport Name="GetFiltreDetail" ReturnType="Collection(ExamenProjetIntegrationModel.GetFiltreDetail_Result)">
-          <Parameter Name="id" Mode="In" Type="Guid" />
-          </FunctionImport>
-          <EntitySet Name="Chevals" EntityType="ExamenProjetIntegrationModel.Cheval" />
-          <AssociationSet Name="FK_Cheval_Niveau" Association="ExamenProjetIntegrationModel.FK_Cheval_Niveau">
-            <End Role="Niveau" EntitySet="Niveaux" />
-            <End Role="Cheval" EntitySet="Chevals" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Cheval_TypeCours" Association="ExamenProjetIntegrationModel.FK_Cheval_TypeCours">
-            <End Role="TypeCour" EntitySet="TypeCours" />
-            <End Role="Cheval" EntitySet="Chevals" />
-          </AssociationSet>
           <FunctionImport Name="GetChevauxFiltre" ReturnType="Collection(ExamenProjetIntegrationModel.GetChevauxFiltre_Result)">
             <Parameter Name="typecours" Mode="In" Type="String" />
             <Parameter Name="typediscipline" Mode="In" Type="String" />
             <Parameter Name="niveau" Mode="In" Type="String" />
             <Parameter Name="idCours" Mode="In" Type="Guid" />
           </FunctionImport>
-          <EntitySet Name="Reservations" EntityType="ExamenProjetIntegrationModel.Reservation" />
-          <FunctionImport Name="AddReservation">
-            <Parameter Name="idUser" Mode="In" Type="Guid" />
-            <Parameter Name="idCours" Mode="In" Type="Guid" />
-            <Parameter Name="idCheval" Mode="In" Type="Guid" />
+          <FunctionImport Name="GetFiltre" ReturnType="Collection(ExamenProjetIntegrationModel.GetFiltre_Result)">
+            <Parameter Name="typecours" Mode="In" Type="String" />
+            <Parameter Name="typediscipline" Mode="In" Type="String" />
+            <Parameter Name="niveau" Mode="In" Type="String" />
+            <Parameter Name="date" Mode="In" Type="DateTime" />
+            <Parameter Name="user" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="GetFiltreDetail" ReturnType="Collection(ExamenProjetIntegrationModel.GetFiltreDetail_Result)">
+          <Parameter Name="id" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="GetUser" ReturnType="Collection(ExamenProjetIntegrationModel.GetUser_Result)">
+          <Parameter Name="name" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="UpdateCoursParticipant">
-            <Parameter Name="idCours" Mode="In" Type="Guid" />
+          <Parameter Name="idCours" Mode="In" Type="Guid" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GetAllCours_Result">
@@ -315,6 +474,10 @@
           <Property Type="DateTime" Name="COURS_fin" Nullable="false" Precision="23" />
           <Property Type="Int32" Name="COURS_NombreDePlaces" Nullable="false" />
           <Property Type="String" Name="NIVEAU_couleur" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="GetChevauxFiltre_Result">
+          <Property Type="Guid" Name="CHEVAL_id" Nullable="false" />
+          <Property Type="String" Name="CHEVAL_nom" Nullable="false" MaxLength="50" />
         </ComplexType>
         <ComplexType Name="GetFiltre_Result">
           <Property Type="Guid" Name="COURS_id" Nullable="false" />
@@ -333,60 +496,54 @@
           <Property Type="String" Name="PROFESSEUR_prenom" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="PROFESSEUR_nom" Nullable="false" MaxLength="50" />
         </ComplexType>
-        <EntityType Name="Cheval">
-          <Key>
-            <PropertyRef Name="CHEVAL_id" />
-          </Key>
-          <Property Name="CHEVAL_id" Type="Guid" Nullable="false" />
-          <Property Name="CHEVAL_nom" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TYPECOURS_id" Type="Guid" Nullable="false" />
-          <Property Name="NIVEAU_id" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="Niveau" Relationship="ExamenProjetIntegrationModel.FK_Cheval_Niveau" FromRole="Cheval" ToRole="Niveau" />
-          <NavigationProperty Name="TypeCour" Relationship="ExamenProjetIntegrationModel.FK_Cheval_TypeCours" FromRole="Cheval" ToRole="TypeCour" />
-        </EntityType>
-        <Association Name="FK_Cheval_Niveau">
-          <End Type="ExamenProjetIntegrationModel.Niveau" Role="Niveau" Multiplicity="1" />
-          <End Type="ExamenProjetIntegrationModel.Cheval" Role="Cheval" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Niveau">
-              <PropertyRef Name="NIVEAU_id" />
-            </Principal>
-            <Dependent Role="Cheval">
-              <PropertyRef Name="NIVEAU_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Cheval_TypeCours">
-          <End Type="ExamenProjetIntegrationModel.TypeCour" Role="TypeCour" Multiplicity="1" />
-          <End Type="ExamenProjetIntegrationModel.Cheval" Role="Cheval" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TypeCour">
-              <PropertyRef Name="TYPECOURS_id" />
-            </Principal>
-            <Dependent Role="Cheval">
-              <PropertyRef Name="TYPECOURS_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <ComplexType Name="GetChevauxFiltre_Result">
-          <Property Type="Guid" Name="CHEVAL_id" Nullable="false" />
-          <Property Type="String" Name="CHEVAL_nom" Nullable="false" MaxLength="50" />
+        <ComplexType Name="GetUser_Result">
+          <Property Type="String" Name="Id" Nullable="false" MaxLength="128" />
+          <Property Type="String" Name="UserName" Nullable="false" MaxLength="256" />
+          <Property Type="String" Name="PasswordHash" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="256" />
         </ComplexType>
-        <EntityType Name="Reservation">
-          <Key>
-            <PropertyRef Name="RESERVATION_id" />
-          </Key>
-          <Property Name="RESERVATION_id" Type="Guid" Nullable="false" />
-          <Property Name="ASPNETUSERS_id" Type="Guid" Nullable="false" />
-          <Property Name="COURS_id" Type="Guid" Nullable="false" />
-          <Property Name="CHEVAL_id" Type="Guid" Nullable="false" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ExamenProjetIntegrationModelStoreContainer" CdmEntityContainer="ExamenProjetIntegrationEntities">
+          <EntitySetMapping Name="AspNetRoles">
+            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.AspNetRole">
+              <MappingFragment StoreEntitySet="AspNetRoles">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.AspNetUser">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Chevals">
+            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.Cheval">
+              <MappingFragment StoreEntitySet="Cheval">
+                <ScalarProperty Name="CHEVAL_id" ColumnName="CHEVAL_id" />
+                <ScalarProperty Name="CHEVAL_nom" ColumnName="CHEVAL_nom" />
+                <ScalarProperty Name="TYPECOURS_id" ColumnName="TYPECOURS_id" />
+                <ScalarProperty Name="NIVEAU_id" ColumnName="NIVEAU_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Cours">
             <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.Cour">
               <MappingFragment StoreEntitySet="Cours">
@@ -418,6 +575,16 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Reservations">
+            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.Reservation">
+              <MappingFragment StoreEntitySet="Reservation">
+                <ScalarProperty Name="RESERVATION_id" ColumnName="RESERVATION_id" />
+                <ScalarProperty Name="ASPNETUSERS_id" ColumnName="ASPNETUSERS_id" />
+                <ScalarProperty Name="COURS_id" ColumnName="COURS_id" />
+                <ScalarProperty Name="CHEVAL_id" ColumnName="CHEVAL_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="TypeCours">
             <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.TypeCour">
               <MappingFragment StoreEntitySet="TypeCours">
@@ -427,6 +594,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <AssociationSetMapping Name="AspNetUserRoles" TypeName="ExamenProjetIntegrationModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
+            <EndProperty Name="AspNetRoles">
+              <ScalarProperty Name="Id" ColumnName="RoleId" />
+            </EndProperty>
+            <EndProperty Name="AspNetUsers">
+              <ScalarProperty Name="Id" ColumnName="UserId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <FunctionImportMapping FunctionImportName="AddReservation" FunctionName="ExamenProjetIntegrationModel.Store.AddReservation" />
           <FunctionImportMapping FunctionImportName="GetAllCours" FunctionName="ExamenProjetIntegrationModel.Store.GetAllCours">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetAllCours_Result">
@@ -437,6 +613,14 @@
                 <ScalarProperty Name="COURS_fin" ColumnName="COURS_fin" />
                 <ScalarProperty Name="COURS_NombreDePlaces" ColumnName="COURS_NombreDePlaces" />
                 <ScalarProperty Name="NIVEAU_couleur" ColumnName="NIVEAU_couleur" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetChevauxFiltre" FunctionName="ExamenProjetIntegrationModel.Store.GetChevauxFiltre">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetChevauxFiltre_Result">
+                <ScalarProperty Name="CHEVAL_id" ColumnName="CHEVAL_id" />
+                <ScalarProperty Name="CHEVAL_nom" ColumnName="CHEVAL_nom" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -465,35 +649,16 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <EntitySetMapping Name="Chevals">
-            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.Cheval">
-              <MappingFragment StoreEntitySet="Cheval">
-                <ScalarProperty Name="NIVEAU_id" ColumnName="NIVEAU_id" />
-                <ScalarProperty Name="TYPECOURS_id" ColumnName="TYPECOURS_id" />
-                <ScalarProperty Name="CHEVAL_nom" ColumnName="CHEVAL_nom" />
-                <ScalarProperty Name="CHEVAL_id" ColumnName="CHEVAL_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="GetChevauxFiltre" FunctionName="ExamenProjetIntegrationModel.Store.GetChevauxFiltre">
+          <FunctionImportMapping FunctionImportName="GetUser" FunctionName="ExamenProjetIntegrationModel.Store.GetUser">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetChevauxFiltre_Result">
-                <ScalarProperty Name="CHEVAL_id" ColumnName="CHEVAL_id" />
-                <ScalarProperty Name="CHEVAL_nom" ColumnName="CHEVAL_nom" />
+              <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetUser_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <EntitySetMapping Name="Reservations">
-            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.Reservation">
-              <MappingFragment StoreEntitySet="Reservation">
-                <ScalarProperty Name="CHEVAL_id" ColumnName="CHEVAL_id" />
-                <ScalarProperty Name="COURS_id" ColumnName="COURS_id" />
-                <ScalarProperty Name="ASPNETUSERS_id" ColumnName="ASPNETUSERS_id" />
-                <ScalarProperty Name="RESERVATION_id" ColumnName="RESERVATION_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="AddReservation" FunctionName="ExamenProjetIntegrationModel.Store.AddReservation" />
           <FunctionImportMapping FunctionImportName="UpdateCoursParticipant" FunctionName="ExamenProjetIntegrationModel.Store.UpdateCoursParticipant" />
         </EntityContainerMapping>
       </Mapping>

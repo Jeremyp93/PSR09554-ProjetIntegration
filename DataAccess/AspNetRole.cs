@@ -12,22 +12,18 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class Niveau
+    public partial class AspNetRole
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Niveau()
+        public AspNetRole()
         {
-            this.Chevals = new HashSet<Cheval>();
-            this.Cours = new HashSet<Cour>();
+            this.AspNetUsers = new HashSet<AspNetUser>();
         }
     
-        public System.Guid NIVEAU_id { get; set; }
-        public string NIVEAU_libelle { get; set; }
-        public string NIVEAU_Couleur { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Cheval> Chevals { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Cour> Cours { get; set; }
+        public virtual ICollection<AspNetUser> AspNetUsers { get; set; }
     }
 }

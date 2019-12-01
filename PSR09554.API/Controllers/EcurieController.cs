@@ -25,14 +25,18 @@ namespace PSR09554.API.Controllers
             return Json(events);
         }
 
+        [System.Web.Http.Authorize]
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("v1/ecurie/CoursFiltre")]
         public IHttpActionResult GetCoursFiltre([FromBody] FiltreModel filtre)
         {
-            var events = BL.getAllCoursFiltre(filtre.typeCours, filtre.typediscipline, filtre.niveau, filtre.date);
+            var identity = (ClaimsIdentity)User.Identity;
+            var UserName = identity.Name;
+            var events = BL.getAllCoursFiltre(filtre.typeCours, filtre.typediscipline, filtre.niveau, filtre.date, UserName);
             return Json(events);
         }
 
+        [System.Web.Http.Authorize]
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("v1/ecurie/CoursFiltreDetail")]
         public IHttpActionResult GetCoursFiltreDetail([FromUri] string id)
@@ -46,6 +50,7 @@ namespace PSR09554.API.Controllers
             return NotFound();
         }
 
+        [System.Web.Http.Authorize]
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("v1/ecurie/ChevauxFiltre")]
         public IHttpActionResult GetChevauxFiltre([FromUri] string id, [FromBody] FiltreModel filtre)
@@ -59,6 +64,7 @@ namespace PSR09554.API.Controllers
             return NotFound();
         }
 
+        [System.Web.Http.Authorize]
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("v1/ecurie/AjouterReservation")]
         public IHttpActionResult AddReservation([FromBody] ReservationNewModel reservation)
