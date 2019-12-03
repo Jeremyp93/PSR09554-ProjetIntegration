@@ -1,0 +1,91 @@
+﻿
+@{
+    ViewBag.Title = "AjouterCours";
+}
+
+<h2>AjouterCours</h2>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" type="text/css" href="~/Content/clockpicker.css" />
+<script type="text/javascript" src="~/Scripts/clockpicker.js"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/bootstrap-select.css" />
+<link rel="stylesheet" href="~/Content/bootstrap-select.min.css" />
+<script type="text/javascript" src="~/Scripts/bootstrap-select.js"></script>
+
+<form id="productForm" class="form-horizontal">
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="far fa-calendar-alt"></i></span>
+                <input type="text" name="datefilter" value="" class="form-control" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="far fa-clock"></i></span>
+                <input class="form-control" id="single-input" value="" placeholder="Now">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="far fa-calendar"></i></span>
+                <select class="selectpicker form-control" id="jourCours" title="Choisissez un jour...">
+                    <option value="lundi">Lundi</option>
+                    <option value="mardi">Mardi</option>
+                    <option value="mercredi">Mercredi</option>
+                    <option value="jeudi">Jeudi</option>
+                    <option value="vendredi">Vendredi</option>
+                    <option value="samedi">Samedi</option>
+                    <option value="dimanche">Dimanche</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <input id="btnAdd" type="button" value="Créer" , onclick="add();" class="btn btn-primary"/>
+            </div>
+        </div>
+    </div>
+
+
+</form>
+
+<script type="text/javascript">
+    $(function () {
+
+        $('input[name="datefilter"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        });
+
+        $('input[name="datefilter"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        var input = $('#single-input').clockpicker({
+            placement: 'bottom',
+            align: 'left',
+            autoclose: true,
+            'default': 'now'
+        });
+    });
+</script>
+

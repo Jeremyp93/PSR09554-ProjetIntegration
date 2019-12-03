@@ -73,8 +73,11 @@ namespace PSR09554.API.Controllers
             {
                 try
                 {
+                    var identity = (ClaimsIdentity)User.Identity;
+                    string id = identity.Claims
+                        .FirstOrDefault(c => c.Type == "id").Value;
                     Guid idUser;
-                    if (Guid.TryParse("b14ec8f8-8122-4930-98e5-ef27e05ff66b", out idUser))
+                    if (Guid.TryParse(id, out idUser))
                     {
                         Guid idCheval = BL.getIdCheval(reservation.cheval);
                         BL.addReservation(idUser, reservation.idCours, idCheval);

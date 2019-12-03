@@ -206,6 +206,9 @@
                         $('#myModal #pDetails').empty().html($description);
 
                         $('#myModal').modal();
+                    },
+                    eventAfterRender: function (event, element) {
+                        $(element).tooltip({title:event.title+ " - " +event.description.split(";")[1]+ " - " +event.description.split(";")[2], container: "body"});
                     }
                 });
                 function renderViewColumns(view, element) {

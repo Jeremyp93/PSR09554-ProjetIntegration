@@ -7,6 +7,13 @@
 <link rel="stylesheet" href="~/Content/jquery.steps.css" />
 <link rel="stylesheet" href="~/Content/main.css" />
 <link rel="stylesheet" href="~/Content/normalize.css" />
+<link rel="stylesheet" type="text/css" href="~/Content/bootstrap-select.css" />
+<link rel="stylesheet" href="~/Content/bootstrap-select.min.css" />
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery.steps.js"></script>
+<script src="~/Scripts/jquery.steps.min.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-select.js"></script>
 
 <style>
     #chevalImage, #recapImageCheval {
@@ -26,18 +33,18 @@
         <h3>Cours</h3>
         <section>
             <label for="typeCours">A quelle cours souhaitez-vous participer ?</label><br />
-            <select id="typeCours" name="typeCours">
+            <select id="typeCours" name="typeCours" class="selectpicker required" title="Veuillez choisir un cours...">
                 <option value="Collectif">Collectif</option>
                 <option value="Individuel">Individuel</option>
                 <option value="Randonnee">Randonnée</option>
             </select><br /><br />
-            <label for="typeDiscipline">Discipline : </label><br />
-            <select id="typeDiscipline" name="typeCours">
+            <label for="typeDiscipline" class="discipline">Discipline : </label><br />
+            <select id="typeDiscipline" name="typeCours" class="selectpicker required discipline" title="Veuillez choisir la discipline...">
                 <option value="Dressage">Dressage</option>
                 <option value="Obstacle">Obstacle</option>
             </select><br /><br />
             <label for="niveau">Quel est votre niveau?</label><br />
-            <select id="niveau" name="niveau">
+            <select id="niveau" name="niveau" class="selectpicker required" title="Votre niveau...">
                 <option value="Debutant">Débutant</option>
                 <option value="Moyen">Intermdiaire</option>
                 <option value="Confirme">Confirmé</option>
@@ -64,10 +71,10 @@
         <h3>Cheval</h3>
         <section>
             <p>Veuillez choisir le cheval que vous voulez monter pour le cours choisi.</p>
-            <label for="nom">Cheval</label><br/>
-            <select id="cheval" name="cheval" size="5" class="required"></select><br /><br />
-            <label for="photo">Photo</label><br/>
-            <img id="chevalImage" src=""/>
+            <label for="nom">Cheval</label><br />
+            <select id="cheval" name="cheval" class="required selectpicker" title="choisissez un cheval..."></select><br /><br />
+            <label for="photo">Photo</label><br />
+            <img id="chevalImage" src="" />
         </section>
         <h3>Récapitulation</h3>
         <section>
@@ -78,13 +85,13 @@
                 <b>Heure de fin :</b> <span id="recapHeureFin"></span>
             </p>
             <p>
-                <b>Type de cours :</b> <span id="recapTypecours"></span><br/>
-                <b>Dsicpline :</b> <span id="recapDiscipline"></span><br/>
+                <b>Type de cours :</b> <span id="recapTypecours"></span><br />
+                <b>Dsicpline :</b> <span id="recapDiscipline"></span><br />
                 <b>Professeur :</b> <span id="recapProfesseur"></span>
             </p>
             <p>
-                <b>Cheval choisi :</b> <span id="recapCheval"></span><br/>
-                <img id="recapImageCheval" src=""/>
+                <b>Cheval choisi :</b> <span id="recapCheval"></span><br />
+                <img id="recapImageCheval" src="" />
             </p>
         </section>
     </div>
@@ -96,10 +103,6 @@
     var ecuriePath = path + CUtil.GetValueBaseOnKey("GameUrl");
 }
 
-<script src="~/Scripts/jquery-3.3.1.js"></script>
-<script src="~/Scripts/jquery.steps.js"></script>
-<script src="~/Scripts/jquery.steps.min.js" type="text/javascript"></script>
-<script src="~/Scripts/jquery.validate.min.js"></script>
 <script>
     jQuery.extend(jQuery.validator.messages, {
         required: "Ce champ est obligatoire !",
@@ -148,7 +151,14 @@
             var src = "../Images/Chevaux/" + $(this).val() + ".jpg";
             $("#chevalImage").attr("src", src);
         });
+        $('#typeCours').change(function () {
+            if ($('#typeCours').val() == "Randonnee") {
+                $('.discipline').hide();
+            } else {
+                $('.discipline').show();
+            }
 
+        });
         $('.coursTrouve').hide();
         $('#name').hide();
     });
@@ -284,6 +294,7 @@
                     function(index, value) {
                         $('#cheval').append($('<option>').text(value.nom).val(value.nom));
                     });
+                $('#cheval').selectpicker('refresh');
             },
             error: function(data) {
                 alert('failed');
