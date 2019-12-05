@@ -1,4 +1,5 @@
-﻿
+﻿@using Helpers
+
 @{
     ViewBag.Title = "AjouterCours";
 }
@@ -11,16 +12,70 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <link rel="stylesheet" type="text/css" href="~/Content/clockpicker.css" />
 <script type="text/javascript" src="~/Scripts/clockpicker.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
 <link rel="stylesheet" type="text/css" href="~/Content/bootstrap-select.css" />
 <link rel="stylesheet" href="~/Content/bootstrap-select.min.css" />
 <script type="text/javascript" src="~/Scripts/bootstrap-select.js"></script>
 
-<form id="productForm" class="form-horizontal">
+<form id="CoursForm" class="form-horizontal">
+    <h4>Quel cours souhaitez-vous planifier?</h4>
+
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fas fa-user-alt"></i></span>
+                <select id="typeCours" name="typeCours" class="selectpicker required form-control" title="Veuillez choisir un cours...">
+                    <option value="Collectif">Collectif</option>
+                    <option value="Individuel">Individuel</option>
+                    <option value="Randonnee">Randonnée</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group discipline">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fas fa-map-signs"></i></span>
+                <select id="typeDiscipline" name="typeCours" class="selectpicker required form-control" title="Veuillez choisir la discipline...">
+                    <option value="Dressage">Dressage</option>
+                    <option value="Obstacle">Obstacle</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fas fa-award"></i></span>
+                <select id="niveau" name="niveau" class="selectpicker required form-control" title="Votre niveau...">
+                    <option value="Debutant" class="discipline">Débutant</option>
+                    <option value="Moyen">Intermdiaire</option>
+                    <option value="Confirme">Confirmé</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fas fa-user-graduate"></i></span>
+                <select id="professeur" name="niveau" class="selectpicker required form-control" title="Le professeur...">
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <h4>Quand est-ce que le cours doit être planifié ?</h4>
     <div class="form-group">
         <div class="col-sm-3 inputGroupContainer">
             <div class="input-group">
                 <span class="input-group-addon"><i class="far fa-calendar-alt"></i></span>
-                <input type="text" name="datefilter" value="" class="form-control" />
+                <input id="datefilter" type="text" name="datefilter" value="" class="form-control" />
             </div>
         </div>
     </div>
@@ -54,7 +109,7 @@
     <div class="form-group">
         <div class="col-sm-3 inputGroupContainer">
             <div class="input-group">
-                <input id="btnAdd" type="button" value="Créer" , onclick="add();" class="btn btn-primary"/>
+                <input id="btnAdd" type="button" value="Créer" , onclick="ajouterCours();" class="btn btn-primary" />
             </div>
         </div>
     </div>
@@ -62,30 +117,127 @@
 
 </form>
 
-<script type="text/javascript">
-    $(function () {
+@{
+    var path = CUtil.GetValueBaseOnKey("apiBaseUrl");
+    var sitePath = CUtil.GetValueBaseOnKey("siteBaseUrl");
+    var ecuriePath = path + CUtil.GetValueBaseOnKey("GameUrl");
+}
 
-        $('input[name="datefilter"]').daterangepicker({
-            autoUpdateInput: false,
-            locale: {
-                cancelLabel: 'Clear'
+<script>
+    var token = '@ViewBag.Token';
+    var headers = {};
+    if (token) {
+        headers.Authorization = 'Bearer ' + token;
+    }
+    var startDate;
+    var endDate;
+
+    $(document).ready(function () {
+        $('#typeCours').change(function () {
+            if ($('#typeCours').val() == "Randonnee") {
+                $('.discipline').hide();
+            } else {
+                $('.discipline').show();
             }
+            RechercheProfesseur();
         });
-
-        $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-        });
-
-        $('input[name="datefilter"]').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
-        });
-
-        var input = $('#single-input').clockpicker({
-            placement: 'bottom',
-            align: 'left',
-            autoclose: true,
-            'default': 'now'
+        $('#niveau').change(function () {
+            RechercheProfesseur();
         });
     });
+
+        $(function() {
+            $('input[name="datefilter"]').daterangepicker({
+                autoUpdateInput: false,
+                locale: {
+                    cancelLabel: 'Clear'
+                }
+            });
+
+            $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+                startDate = picker.startDate.format('YYYY-MM-DD');
+                endDate = picker.endDate.format('YYYY-MM-DD');
+            });
+
+            $('input[name="datefilter"]').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+
+            $('#single-input').clockpicker({
+                placement: 'bottom',
+                align: 'left',
+                autoclose: true,
+                'default': 'now'
+            });
+        });
+
+        var form = $("#CoursForm");
+    form.validate({
+        errorPlacement: function errorPlacement(error, element) { element.before(error); },
+        rules: {
+            confirm: {
+                equalTo: "#password"
+            }
+        }
+    });
+
+    function RechercheProfesseur() {
+        var myjson = {
+            typeCours: $('#typeCours').val(),
+            niveau: $('#niveau').val(),
+        };
+        $('#professeur')
+                .find('option')
+                .remove()
+                .end()
+            ;
+        $.ajax({
+            url: '@ecuriePath' + 'RechercheProfesseur',
+            type: 'POST',
+            headers: headers,
+            data: JSON.stringify(myjson),
+            dataType: 'json',
+            async: false,
+            contentType: 'application/json',
+            success: function (data) {
+                $('#alert').text("");
+                $.each(data, function (index, value) {
+                    $('#professeur').append($('<option>').text(value.prenom+" "+value.nom).val(value.id));
+                });
+                $('#professeur').selectpicker('refresh');
+            },
+            error: function(data) {
+                alert('failed');
+            }
+        });
+    }
+
+    function ajouterCours() {
+        var myjson = {
+            dateDebut: startDate,
+            heureDebut: $('#single-input').val(),
+            dateFin: endDate,
+            typeCours: $('#typeCours').val(),
+            discipline: $('#typeDiscipline').val(),
+            niveau: $('#niveau').val(),
+            idProfesseur: $('#professeur').val()
+        };
+        $.ajax({
+            url: '@ecuriePath' + 'AjouterCours',
+            type: 'POST',
+            headers: headers,
+            data: JSON.stringify(myjson),
+            dataType: 'json',
+            async: false,
+            contentType: 'application/json',
+            success: function(data) {
+                window.location.replace('@sitePath'+'/Ecurie/Horaires');
+            },
+            error: function(data) {
+                alert('failed');
+            }
+        });
+    };
 </script>
 

@@ -73,6 +73,8 @@
           <Property Name="PROFESSEUR_id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="PROFESSEUR_prenom" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="PROFESSEUR_nom" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PROFESSEUR_typeCours" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="NIVEAU_id" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
         <EntityType Name="Reservation">
           <Key>
@@ -179,6 +181,38 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Reservation_Cheval">
+          <End Role="Cheval" Type="Self.Cheval" Multiplicity="1" />
+          <End Role="Reservation" Type="Self.Reservation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cheval">
+              <PropertyRef Name="CHEVAL_id" />
+            </Principal>
+            <Dependent Role="Reservation">
+              <PropertyRef Name="CHEVAL_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reservation_Cours">
+          <End Role="Cours" Type="Self.Cours" Multiplicity="1" />
+          <End Role="Reservation" Type="Self.Reservation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cours">
+              <PropertyRef Name="COURS_id" />
+            </Principal>
+            <Dependent Role="Reservation">
+              <PropertyRef Name="COURS_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="AddCours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="cours_debut" Type="datetime" Mode="In" />
+          <Parameter Name="cours_fin" Type="datetime" Mode="In" />
+          <Parameter Name="typecours" Type="varchar" Mode="In" />
+          <Parameter Name="discipline" Type="nvarchar" Mode="In" />
+          <Parameter Name="niveau" Type="varchar" Mode="In" />
+          <Parameter Name="idProfesseur" Type="uniqueidentifier" Mode="In" />
+        </Function>
         <Function Name="AddReservation" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="idUser" Type="uniqueidentifier" Mode="In" />
           <Parameter Name="idCours" Type="uniqueidentifier" Mode="In" />
@@ -200,6 +234,10 @@
         </Function>
         <Function Name="GetFiltreDetail" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="GetProfesseur" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="typecours" Type="varchar" Mode="In" />
+          <Parameter Name="niveau" Type="varchar" Mode="In" />
         </Function>
         <Function Name="GetUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="name" Type="varchar" Mode="In" />
@@ -245,6 +283,14 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
           </AssociationSet>
+          <AssociationSet Name="FK_Reservation_Cheval" Association="Self.FK_Reservation_Cheval">
+            <End Role="Cheval" EntitySet="Cheval" />
+            <End Role="Reservation" EntitySet="Reservation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reservation_Cours" Association="Self.FK_Reservation_Cours">
+            <End Role="Cours" EntitySet="Cours" />
+            <End Role="Reservation" EntitySet="Reservation" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -286,6 +332,7 @@
           <Property Name="NIVEAU_id" Type="Guid" Nullable="false" />
           <NavigationProperty Name="Niveau" Relationship="Self.FK_Cheval_Niveau" FromRole="Cheval" ToRole="Niveau" />
           <NavigationProperty Name="TypeCour" Relationship="Self.FK_Cheval_TypeCours" FromRole="Cheval" ToRole="TypeCours" />
+          <NavigationProperty Name="Reservations" Relationship="ExamenProjetIntegrationModel.FK_Reservation_Cheval" FromRole="Cheval" ToRole="Reservation" />
         </EntityType>
         <EntityType Name="Cour">
           <Key>
@@ -301,6 +348,7 @@
           <NavigationProperty Name="Niveau" Relationship="Self.FK_Cours_Niveau" FromRole="Cours" ToRole="Niveau" />
           <NavigationProperty Name="Professeur" Relationship="Self.FK_Cours_Professeur" FromRole="Cours" ToRole="Professeur" />
           <NavigationProperty Name="TypeCour" Relationship="Self.FK_Cours_TypeCours" FromRole="Cours" ToRole="TypeCours" />
+          <NavigationProperty Name="Reservations" Relationship="ExamenProjetIntegrationModel.FK_Reservation_Cours" FromRole="Cour" ToRole="Reservation" />
         </EntityType>
         <EntityType Name="Niveau">
           <Key>
@@ -320,6 +368,8 @@
           <Property Name="PROFESSEUR_prenom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="PROFESSEUR_nom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Cours" Relationship="Self.FK_Cours_Professeur" FromRole="Professeur" ToRole="Cours" />
+          <Property Name="PROFESSEUR_typeCours" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NIVEAU_id" Type="Guid" Nullable="false" />
         </EntityType>
         <EntityType Name="Reservation">
           <Key>
@@ -329,6 +379,8 @@
           <Property Name="ASPNETUSERS_id" Type="Guid" Nullable="false" />
           <Property Name="COURS_id" Type="Guid" Nullable="false" />
           <Property Name="CHEVAL_id" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Cheval" Relationship="ExamenProjetIntegrationModel.FK_Reservation_Cheval" FromRole="Reservation" ToRole="Cheval" />
+          <NavigationProperty Name="Cour" Relationship="ExamenProjetIntegrationModel.FK_Reservation_Cours" FromRole="Reservation" ToRole="Cour" />
         </EntityType>
         <EntityType Name="TypeCour">
           <Key>
@@ -465,6 +517,26 @@
           <FunctionImport Name="UpdateCoursParticipant">
           <Parameter Name="idCours" Mode="In" Type="Guid" />
           </FunctionImport>
+          <AssociationSet Name="FK_Reservation_Cheval" Association="ExamenProjetIntegrationModel.FK_Reservation_Cheval">
+            <End Role="Cheval" EntitySet="Chevals" />
+            <End Role="Reservation" EntitySet="Reservations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reservation_Cours" Association="ExamenProjetIntegrationModel.FK_Reservation_Cours">
+            <End Role="Cour" EntitySet="Cours" />
+            <End Role="Reservation" EntitySet="Reservations" />
+          </AssociationSet>
+          <FunctionImport Name="GetProfesseur" ReturnType="Collection(ExamenProjetIntegrationModel.GetProfesseur_Result)">
+            <Parameter Name="typecours" Mode="In" Type="String" />
+            <Parameter Name="niveau" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="AddCours">
+            <Parameter Name="cours_debut" Mode="In" Type="DateTime" />
+            <Parameter Name="cours_fin" Mode="In" Type="DateTime" />
+            <Parameter Name="typecours" Mode="In" Type="String" />
+            <Parameter Name="discipline" Mode="In" Type="String" />
+            <Parameter Name="niveau" Mode="In" Type="String" />
+            <Parameter Name="idProfesseur" Mode="In" Type="Guid" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GetAllCours_Result">
           <Property Type="String" Name="Titre" Nullable="true" MaxLength="108" />
@@ -501,6 +573,35 @@
           <Property Type="String" Name="UserName" Nullable="false" MaxLength="256" />
           <Property Type="String" Name="PasswordHash" Nullable="true" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="256" />
+        </ComplexType>
+        <Association Name="FK_Reservation_Cheval">
+          <End Type="ExamenProjetIntegrationModel.Cheval" Role="Cheval" Multiplicity="1" />
+          <End Type="ExamenProjetIntegrationModel.Reservation" Role="Reservation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cheval">
+              <PropertyRef Name="CHEVAL_id" />
+            </Principal>
+            <Dependent Role="Reservation">
+              <PropertyRef Name="CHEVAL_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reservation_Cours">
+          <End Type="ExamenProjetIntegrationModel.Cour" Role="Cour" Multiplicity="1" />
+          <End Type="ExamenProjetIntegrationModel.Reservation" Role="Reservation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cour">
+              <PropertyRef Name="COURS_id" />
+            </Principal>
+            <Dependent Role="Reservation">
+              <PropertyRef Name="COURS_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="GetProfesseur_Result">
+          <Property Type="Guid" Name="PROFESSEUR_id" Nullable="false" />
+          <Property Type="String" Name="PROFESSEUR_prenom" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PROFESSEUR_nom" Nullable="false" MaxLength="50" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -569,6 +670,8 @@
           <EntitySetMapping Name="Professeurs">
             <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.Professeur">
               <MappingFragment StoreEntitySet="Professeur">
+                <ScalarProperty Name="NIVEAU_id" ColumnName="NIVEAU_id" />
+                <ScalarProperty Name="PROFESSEUR_typeCours" ColumnName="PROFESSEUR_typeCours" />
                 <ScalarProperty Name="PROFESSEUR_id" ColumnName="PROFESSEUR_id" />
                 <ScalarProperty Name="PROFESSEUR_prenom" ColumnName="PROFESSEUR_prenom" />
                 <ScalarProperty Name="PROFESSEUR_nom" ColumnName="PROFESSEUR_nom" />
@@ -660,6 +763,16 @@
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="UpdateCoursParticipant" FunctionName="ExamenProjetIntegrationModel.Store.UpdateCoursParticipant" />
+          <FunctionImportMapping FunctionImportName="GetProfesseur" FunctionName="ExamenProjetIntegrationModel.Store.GetProfesseur">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetProfesseur_Result">
+                <ScalarProperty Name="PROFESSEUR_id" ColumnName="PROFESSEUR_id" />
+                <ScalarProperty Name="PROFESSEUR_prenom" ColumnName="PROFESSEUR_prenom" />
+                <ScalarProperty Name="PROFESSEUR_nom" ColumnName="PROFESSEUR_nom" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="AddCours" FunctionName="ExamenProjetIntegrationModel.Store.AddCours" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

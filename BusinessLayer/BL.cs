@@ -301,5 +301,62 @@ namespace BusinessLayer
                 throw e;
             }
         }
+
+        public static List<ProfesseurFiltreModel> getProfesseurFiltre(string typecours, string niveau)
+        {
+            try
+            {
+                var lstToReturn = new List<ProfesseurFiltreModel>();
+                foreach (var professeur in Data.GetProfesseurFiltre(typecours, niveau))
+                {
+                    lstToReturn.Add(new ProfesseurFiltreModel
+                    {
+                        id = professeur.PROFESSEUR_id,
+                        prenom = professeur.PROFESSEUR_prenom,
+                        nom = professeur.PROFESSEUR_nom
+                    });
+                }
+
+                return lstToReturn;
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
+
+        public static void addCours(DateTime coursDebut, DateTime coursFin, string typeCours, string discipline, string niveau, Guid idProfesseur)
+        {
+            try
+            {
+                Data.AddCours(coursDebut, coursFin, typeCours, discipline, niveau, idProfesseur);
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
     }
 }

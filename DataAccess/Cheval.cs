@@ -14,6 +14,12 @@ namespace DataAccess
     
     public partial class Cheval
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Cheval()
+        {
+            this.Reservations = new HashSet<Reservation>();
+        }
+    
         public System.Guid CHEVAL_id { get; set; }
         public string CHEVAL_nom { get; set; }
         public System.Guid TYPECOURS_id { get; set; }
@@ -21,5 +27,7 @@ namespace DataAccess
     
         public virtual Niveau Niveau { get; set; }
         public virtual TypeCour TypeCour { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Reservation> Reservations { get; set; }
     }
 }

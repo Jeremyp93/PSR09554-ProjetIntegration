@@ -19,6 +19,8 @@
         <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cours_Professeur" ManuallyRouted="false" />
         <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cours_TypeCours" ManuallyRouted="false" />
         <AssociationConnector Association="ExamenProjetIntegrationModel.AspNetUserRoles" ManuallyRouted="false" />
+        <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Reservation_Cheval" />
+        <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Reservation_Cours" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

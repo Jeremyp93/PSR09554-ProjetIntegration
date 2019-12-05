@@ -85,5 +85,22 @@ namespace DataAccess
                 return lstToReturn;
             }
         }
+
+        public static List<GetProfesseur_Result> GetProfesseurFiltre(string typecours, string niveau)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                var lstToReturn = db.GetProfesseur(typecours,niveau).ToList();
+                return lstToReturn;
+            }
+        }
+
+        public static void AddCours(DateTime coursDebut, DateTime coursFin, string typeCours, string discipline, string niveau, Guid idProfesseur)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                db.AddCours(coursDebut, coursFin, typeCours, discipline, niveau, idProfesseur);
+            }
+        }
     }
 }

@@ -23,6 +23,8 @@ namespace DataAccess
         public System.Guid PROFESSEUR_id { get; set; }
         public string PROFESSEUR_prenom { get; set; }
         public string PROFESSEUR_nom { get; set; }
+        public string PROFESSEUR_typeCours { get; set; }
+        public System.Guid NIVEAU_id { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Cour> Cours { get; set; }

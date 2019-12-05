@@ -10,16 +10,11 @@
 namespace DataAccess
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class Reservation
+    public partial class GetProfesseur_Result
     {
-        public System.Guid RESERVATION_id { get; set; }
-        public System.Guid ASPNETUSERS_id { get; set; }
-        public System.Guid COURS_id { get; set; }
-        public System.Guid CHEVAL_id { get; set; }
-    
-        public virtual Cheval Cheval { get; set; }
-        public virtual Cour Cour { get; set; }
+        public System.Guid PROFESSEUR_id { get; set; }
+        public string PROFESSEUR_prenom { get; set; }
+        public string PROFESSEUR_nom { get; set; }
     }
 }

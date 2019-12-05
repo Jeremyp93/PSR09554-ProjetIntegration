@@ -204,6 +204,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Hash\MyHash.cs" />
+    <Compile Include="Models\CoursNewModel.cs" />
     <Compile Include="Models\FiltreModel.cs" />
     <Compile Include="Models\ReservationNewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

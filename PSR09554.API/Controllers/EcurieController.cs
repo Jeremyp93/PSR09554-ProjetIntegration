@@ -94,5 +94,37 @@ namespace PSR09554.API.Controllers
                 }
             }
         }
+
+        [System.Web.Http.Authorize(Roles = "Admin")]
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("v1/ecurie/RechercheProfesseur")]
+        public IHttpActionResult RechercheProfesseur([FromBody] FiltreModel filtre)
+        {
+            var professeur = BL.getProfesseurFiltre(filtre.typeCours, filtre.niveau);
+            return Json(professeur);
+        }
+
+        [System.Web.Http.Authorize(Roles = "Admin")]
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("v1/ecurie/AjouterCours")]
+        public IHttpActionResult AddCours([FromBody] CoursNewModel cours)
+        {
+            using (var txscope = new TransactionScope(TransactionScopeOption.RequiresNew))
+            {
+                try
+                {
+                    var debut = cours.dateDebut.Date.Add(cours.heureDebut.TimeOfDay);
+                    var fin = cours.dateFin.Date.Add(cours.heureDebut.AddHours(1).TimeOfDay);
+                    BL.addCours(debut, fin, cours.typeCours, cours.discipline, cours.niveau, cours.idProfesseur);
+                    txscope.Complete();
+                    return Content(HttpStatusCode.Created, "Created");
+                }
+                catch
+                {
+                    txscope.Dispose();
+                    return BadRequest();
+                }
+            }
+        }
     }
 }

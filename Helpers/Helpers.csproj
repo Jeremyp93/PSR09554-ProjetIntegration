@@ -53,6 +53,7 @@
     <Compile Include="Models\CoursFiltreDetailModel.cs" />
     <Compile Include="Models\CoursFiltreModel.cs" />
     <Compile Include="Models\CoursModel.cs" />
+    <Compile Include="Models\ProfesseurFiltreModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
