@@ -10,7 +10,8 @@ namespace Helpers.Models
 {
     public class CoursEventModel
     {
-        [Display(Name = "Date")]
+        public Guid id { get; set; }
+
         [Required]
         public string titre { get; set; }
 

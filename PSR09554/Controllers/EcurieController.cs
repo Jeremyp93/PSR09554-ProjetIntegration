@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using BusinessLayer;
 using Newtonsoft.Json;
 
@@ -16,8 +17,25 @@ namespace PSR09554.Controllers
     {
         [HttpGet]
         // GET: Ecurie
-        public ActionResult Horaires()
+        public async Task<ActionResult> Horaires()
         {
+            if (User.IsInRole("Admin"))
+            {
+                if (Session["TokenNumber"] != null)
+                {
+                    await ValidateToken(Session["TokenNumber"].ToString());
+                    if (Session["ValidToken"].ToString() == "202")
+                    {
+                        ViewBag.Token = Session["TokenNumber"].ToString();
+                        return View();
+                    }
+                    else
+                    {
+                        return RedirectToAction("Login", "Account");
+                    }
+                }
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
 

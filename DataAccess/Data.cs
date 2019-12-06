@@ -102,5 +102,12 @@ namespace DataAccess
                 db.AddCours(coursDebut, coursFin, typeCours, discipline, niveau, idProfesseur);
             }
         }
+        public static void DeleteCours(Guid idCours)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                db.DeleteCours(idCours);
+            }
+        }
     }
 }

@@ -15,6 +15,8 @@ namespace PSR09554.API.Models
         [DataType(DataType.Date)]
         public DateTime dateFin { get; set; }
 
+        public string jourSemaine { get; set; }
+
         public string typeCours { get; set; }
 
         public string discipline { get; set; }

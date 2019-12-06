@@ -11,44 +11,6 @@ namespace BusinessLayer
 {
     public class BL
     {
-        public static List<CoursModel> getAllCours()
-        {
-            try
-            {
-                var lstToReturn = new List<CoursModel>();
-                foreach (var cours in Data.getAllCours())
-                {
-                    lstToReturn.Add(new CoursModel
-                    {
-                        id = cours.COURS_id,
-                        heureDebut = cours.COURS_debut,
-                        heureFin = cours.COURS_fin,
-                        nombreMax = cours.COURS_NombreDePlaces,
-                        typeDeCours = cours.TYPECOURS_id,
-                        niveau = cours.NIVEAU_id,
-                        professeur = cours.PROFESSEUR_id
-                    });
-                }
-
-                return lstToReturn;
-            }
-            catch (Exception e)
-            {
-                var sqlex = e.InnerException as SqlException;
-
-                if (sqlex != null)
-                {
-                    switch (sqlex.Number)
-                    {
-                        default:
-                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
-                    }
-                }
-
-                throw e;
-            }
-        }
-
         public static List<CoursEventModel> getAllCoursEvent()
         {
             try
@@ -58,12 +20,13 @@ namespace BusinessLayer
                 {
                     lstToReturn.Add(new CoursEventModel
                     {
+                        id = events.COURS_id,
                         titre = events.Titre,
                         description = events.Description,
                         coursDebut = events.COURS_debut,
                         coursFin = events.COURS_fin,
                         nombreMax = events.COURS_NombreDePlaces,
-                        couleur = events.NIVEAU_couleur,
+                        couleur = events.NIVEAU_Couleur,
                         professeur = events.Professeur
                     });
                 }
@@ -341,6 +304,29 @@ namespace BusinessLayer
             try
             {
                 Data.AddCours(coursDebut, coursFin, typeCours, discipline, niveau, idProfesseur);
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
+
+        public static void deleteCours(Guid idCours)
+        {
+            try
+            {
+                Data.DeleteCours(idCours);
             }
             catch (Exception e)
             {

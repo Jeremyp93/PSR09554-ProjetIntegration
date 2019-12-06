@@ -13,12 +13,13 @@ namespace DataAccess
     
     public partial class GetAllCours_Result
     {
+        public System.Guid COURS_id { get; set; }
         public string Titre { get; set; }
         public string Description { get; set; }
         public string Professeur { get; set; }
         public System.DateTime COURS_debut { get; set; }
         public System.DateTime COURS_fin { get; set; }
         public int COURS_NombreDePlaces { get; set; }
-        public string NIVEAU_couleur { get; set; }
+        public string NIVEAU_Couleur { get; set; }
     }
 }

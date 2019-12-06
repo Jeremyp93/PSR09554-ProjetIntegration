@@ -109,21 +109,61 @@ namespace PSR09554.API.Controllers
         [System.Web.Http.Route("v1/ecurie/AjouterCours")]
         public IHttpActionResult AddCours([FromBody] CoursNewModel cours)
         {
+            string message = string.Empty;
             using (var txscope = new TransactionScope(TransactionScopeOption.RequiresNew))
             {
                 try
                 {
-                    var debut = cours.dateDebut.Date.Add(cours.heureDebut.TimeOfDay);
-                    var fin = cours.dateFin.Date.Add(cours.heureDebut.AddHours(1).TimeOfDay);
-                    BL.addCours(debut, fin, cours.typeCours, cours.discipline, cours.niveau, cours.idProfesseur);
+                    DateTime jour = cours.dateDebut;
+                    while (jour <= cours.dateFin)
+                    {
+                        if (jour.DayOfWeek.ToString() == cours.jourSemaine)
+                        {
+                            var debut = jour.Date.Add(cours.heureDebut.TimeOfDay);
+                            var fin = jour.Date.Add(cours.heureDebut.AddHours(1).TimeOfDay);
+                            if (!BL.getAllCoursEvent().Where(x => x.coursDebut == debut).Any())
+                            {
+                                BL.addCours(debut, fin, cours.typeCours, cours.discipline, cours.niveau, cours.idProfesseur);
+                            }
+                            else
+                            {
+                                message = message + "Les cours pour les dates suivantes n'ont pas pu être ajouté : " + jour.Date+" - ";
+                            }
+                        }
+
+                        jour = jour.AddDays(1);
+                    }
                     txscope.Complete();
-                    return Content(HttpStatusCode.Created, "Created");
+                    if (string.IsNullOrEmpty(message))
+                        message = "Les cours ont été ajoutés";
+                    return Content(HttpStatusCode.Created, message);
                 }
                 catch
                 {
                     txscope.Dispose();
                     return BadRequest();
                 }
+            }
+        }
+
+        [System.Web.Http.Authorize(Roles = "Admin")]
+        [System.Web.Http.HttpDelete]
+        [System.Web.Http.Route("v1/ecurie/DeleteCours")]
+        public IHttpActionResult DeleteCours([FromUri] string id)
+        {
+            try
+            {
+                Guid idCours;
+                if (Guid.TryParse(id, out idCours))
+                {
+                    BL.deleteCours(idCours);
+                    return Content(HttpStatusCode.OK, "Deleted");
+                }
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.BadRequest, e.Message);
             }
         }
     }

@@ -65,6 +65,10 @@
                 <p id="pDetails"></p>
             </div>
             <div class="modal-footer">
+                @if (this.User.IsInRole("Admin"))
+                {
+                    <button id="deleteButton" type="button" class="btn btn-danger">Supprimer</button>
+                }
                 <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
             </div>
         </div>
@@ -86,67 +90,42 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
 
     <script>
-        $(document).ready(function () {
+        var idCours;
+
+        var token = '@ViewBag.Token'
+        var headers = {};
+        if (token) {
+            headers.Authorization = 'Bearer ' + token;
+        }
+
+        var error;
+
+        $(document).ready(function() {
+            LoadCalendar();
+        });
+
+        function LoadCalendar() {
             var events = [];
 
-            // Sans API
-            //$.ajax({
-            //    type: "GET",
-            //    url: "/Ecurie/GetCours",
-            //    success: function (data) {
-            //        $.each(data,
-            //            function (i, v) {
-            //                if (v.nombreMax != 0) {
-            //                    events.push({
-            //                        title: v.titre,
-            //                        description: v.description + ";" + v.professeur + ";" + v.nombreMax,
-            //                        start: moment(v.coursDebut),
-            //                        end: moment(v.coursFin),
-            //                        color: v.couleur,
-            //                        allDay: false,
-            //                    });
-            //                }
-            //                else {
-            //                    events.push({
-            //                        title: v.titre,
-            //                        description: v.description + ";" + v.professeur + ";" + v.nombreMax,
-            //                        start: moment(v.coursDebut),
-            //                        end: moment(v.coursFin),
-            //                        color: 'gray',
-            //                        allDay: false,
-            //                    });
-            //                }
-
-            //            });
-
-            //        GenerateCalendar(events);
-            //    },
-            //    error: function (error) {
-            //        alert('failed');
-            //    }
-            //});
-
-            // Avec API
             $.ajax({
                 url: '@gamePath' + 'Cours',
                 type: 'GET',
-                success: function (data) {
+                success: function(data) {
                     $.each(data,
-                        function (i, v) {
+                        function(i, v) {
                             if (v.nombreMax != 0) {
                                 events.push({
                                     title: v.titre,
-                                    description: v.description + ";" + v.professeur + ";" + v.nombreMax,
+                                    description: v.description + ";" + v.professeur + ";" + v.nombreMax + ";" + v.id,
                                     start: moment(v.coursDebut),
                                     end: moment(v.coursFin),
                                     color: v.couleur,
                                     allDay: false,
                                 });
-                            }
-                            else {
+                            } else {
                                 events.push({
                                     title: v.titre,
-                                    description: v.description + ";" + v.professeur + ";" + v.nombreMax,
+                                    description: v.description + ";" + v.professeur + ";" + v.nombreMax + ";" + v.id,
                                     start: moment(v.coursDebut),
                                     end: moment(v.coursFin),
                                     color: 'gray',
@@ -158,8 +137,8 @@
 
                     GenerateCalendar(events);
                 },
-                error: function (error) {
-                    alert('failed : '+error);
+                error: function(error) {
+                    alert('failed : ' + error);
                 }
             });
 
@@ -187,11 +166,12 @@
                     eventLimit: true,
                     eventColor: '#378006',
                     events: events,
-                    eventClick: function (calEvent, jsEvent, view) {
+                    eventClick: function(calEvent, jsEvent, view) {
                         $('#myModal #eventTitle').text(calEvent.title);
                         var niveau = calEvent.description.split(";")[0];
                         var professeur = calEvent.description.split(";")[1];
                         var place = calEvent.description.split(";")[2];
+                        idCours = calEvent.description.split(";")[3];
                         var $description = $('<div/>');
                         $description.append($('<p/>')
                             .html('<b>Début du cours: </b>' + calEvent.start.format("DD-MM-YYYY HH:mm")));
@@ -204,15 +184,30 @@
                         else
                             $description.append($('<p/>').html('<b>Places disponnibles: COMPLET</b>'));
                         $('#myModal #pDetails').empty().html($description);
-
+                        $('#deleteButton').show();
                         $('#myModal').modal();
+                        $('#deleteButton').click(function() {
+                            DeleteCours(function () {
+                                if (!error) {
+                                    $('#calendar').fullCalendar('removeEvents', calEvent._id);
+                                }
+                            });
+                        });
                     },
-                    eventAfterRender: function (event, element) {
-                        $(element).tooltip({title:event.title+ " - " +event.description.split(";")[1]+ " - " +event.description.split(";")[2], container: "body"});
+                    eventAfterRender: function(event, element) {
+                        $(element).tooltip({
+                            title: event.title +
+                                " - " +
+                                event.description.split(";")[1] +
+                                " - " +
+                                event.description.split(";")[2],
+                            container: "body"
+                        });
                     }
                 });
+
                 function renderViewColumns(view, element) {
-                    element.find('th.fc-day-header.fc-widget-header').each(function () {
+                    element.find('th.fc-day-header.fc-widget-header').each(function() {
                         var date = moment($(this).data('date'));
                         $(this).html('<span>' +
                             date.format('ddd ') +
@@ -222,7 +217,30 @@
                     });
                 };
             }
-        })
+        }
+
+        function DeleteCours(_callback) {
+            $.ajax({
+                url: '@gamePath' + 'DeleteCours?id=' + idCours,
+                headers: headers,
+                type: 'DELETE',
+                async: false,
+                contentType: 'application/json',
+                success: function(data) {
+                    $('#myModal').modal('hide');
+                    error = false;
+                    _callback();
+                },
+                error: function(data) {
+                    $('#myModal #eventTitle').text("Une erreur est survenue");
+                    $('#myModal #pDetails').empty().text("Quelqu'un a déjà effectuer une réservation pour ce cours !");
+                    $('#deleteButton').hide();
+                    $('#myModal').modal();
+                    error = true;
+                    _callback();
+                }
+            });
+        }
     </script>
 }
 
