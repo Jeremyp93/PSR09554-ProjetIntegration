@@ -117,17 +117,20 @@ namespace PSR09554.API.Controllers
                     DateTime jour = cours.dateDebut;
                     while (jour <= cours.dateFin)
                     {
-                        if (jour.DayOfWeek.ToString() == cours.jourSemaine)
+                        for (int i = 0; i < cours.jourSemaine.Count(); i++)
                         {
-                            var debut = jour.Date.Add(cours.heureDebut.TimeOfDay);
-                            var fin = jour.Date.Add(cours.heureDebut.AddHours(1).TimeOfDay);
-                            if (!BL.getAllCoursEvent().Where(x => x.coursDebut == debut).Any())
+                            if (jour.DayOfWeek.ToString() == cours.jourSemaine[i])
                             {
-                                BL.addCours(debut, fin, cours.typeCours, cours.discipline, cours.niveau, cours.idProfesseur);
-                            }
-                            else
-                            {
-                                message = message + "Les cours pour les dates suivantes n'ont pas pu être ajouté : " + jour.Date+" - ";
+                                var debut = jour.Date.Add(cours.heureDebut.TimeOfDay);
+                                var fin = jour.Date.Add(cours.heureDebut.AddHours(1).TimeOfDay);
+                                if (!BL.getAllCoursEvent().Where(x => x.coursDebut == debut).Any())
+                                {
+                                    BL.addCours(debut, fin, cours.typeCours, cours.discipline, cours.niveau, cours.idProfesseur);
+                                }
+                                else
+                                {
+                                    message = message + "Les cours pour les dates suivantes n'ont pas pu être ajouté : " + jour.Date + " - ";
+                                }
                             }
                         }
 

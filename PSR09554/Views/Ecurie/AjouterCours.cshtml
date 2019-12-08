@@ -102,7 +102,7 @@
                 <div class="col-sm-3 inputGroupContainer">
                     <div class="input-group">
                         <span class="input-group-addon"><i class="far fa-calendar"></i></span>
-                        <select class="selectpicker form-control" id="jourCours" title="Choisissez un jour...">
+                        <select class="selectpicker form-control" id="jourCours" multiple data-actions-box="true" title="Choisissez un jour...">
                             <option value="Monday">Lundi</option>
                             <option value="Tuesday">Mardi</option>
                             <option value="Wednesday">Mercredi</option>
@@ -308,7 +308,7 @@
             contentType: 'application/json',
             success: function (data) {
                 alert(data);
-                location.reload();
+                window.location.replace('@sitePath'+"/Ecurie/Horaires");
             },
             error: function(data) {
                 alert('failed');
