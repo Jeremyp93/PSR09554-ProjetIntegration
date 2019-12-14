@@ -21,6 +21,7 @@
         <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cours_TypeCours" ManuallyRouted="false" />
         <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Reservation_Cours" ManuallyRouted="false" />
         <AssociationConnector Association="ExamenProjetIntegrationModel.AspNetUserRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.ProfCour" Width="1.5" PointX="6.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

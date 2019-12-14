@@ -20,7 +20,6 @@ namespace PSR09554.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";

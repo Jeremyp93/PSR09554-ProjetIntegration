@@ -169,5 +169,13 @@ namespace PSR09554.API.Controllers
                 return Content(HttpStatusCode.BadRequest, e.Message);
             }
         }
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("v1/ecurie/Professeurs")]
+        public IHttpActionResult ProfesseurTable()
+        {
+            var professeur = BL.getProfesseurTable();
+            return Json(professeur);
+        }
     }
 }

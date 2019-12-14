@@ -190,6 +190,8 @@
                             DeleteCours(function () {
                                 if (!error) {
                                     $('#calendar').fullCalendar('removeEvents', calEvent._id);
+                                } else {
+                                    calEvent._id = "";
                                 }
                             });
                         });

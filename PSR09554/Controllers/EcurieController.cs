@@ -109,5 +109,11 @@ namespace PSR09554.Controllers
             }
             return RedirectToAction("Login", "Account");
         }
+
+        [HttpGet]
+        public ActionResult Professeurs()
+        {
+            return View();
+        }
     }
 }

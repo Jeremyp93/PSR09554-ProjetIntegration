@@ -109,5 +109,14 @@ namespace DataAccess
                 db.DeleteCours(idCours);
             }
         }
+
+        public static List<GetProfesseurTable_Result> GetProfesseurTable()
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                var lstToReturn = db.GetProfesseurTable().ToList();
+                return lstToReturn;
+            }
+        }
     }
 }

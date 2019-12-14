@@ -1,0 +1,66 @@
+﻿@using Helpers
+
+@{
+    ViewBag.Title = "Professeurs";
+}
+
+<link rel="stylesheet" href="~/Content/DataTables/css/jquery.dataTables.min.css" />
+<script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+
+<h2>Professeurs</h2>
+
+
+<table id="example" class="display" style="width:100%">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Prenom</th>
+        <th>Nom</th>
+        <th>Type de cours</th>
+        <th>Discpline</th>
+        <th>Niveau</th>
+    </tr>
+    </thead>
+</table>
+
+@{
+    var path = CUtil.GetValueBaseOnKey("apiBaseUrl");
+    var ecuriePath = path + CUtil.GetValueBaseOnKey("GameUrl");
+}
+
+<script>
+    $(document).ready(function () {
+        table = $('#example').DataTable({
+            "processing": true,
+            //"pageLength": 10,
+            //"lengthChange": false,
+            "paging":   false,
+            "info":     false,
+            "ordering": false,
+            "ajax": {
+                "url": "@ecuriePath" + "Professeurs",
+                dataSrc: ''
+            },
+            "columns": [{
+                "data": "id",
+                "render": function ( data, type, row, meta ) {
+                    return '<img src="../Images/Professeurs/'+data+'.jpg" width=75px height=75px />';
+                }
+            }, {
+                "data": "prenom"
+            }, {
+                "data": "nom"
+            }, {
+                "data": "typeCours"
+            }, {
+                "data": "discipline"
+            }, {
+                "data": "niveau"
+                }],
+            "columnDefs": [
+                {"width": "10%", "targets": 0}
+            ]
+        });
+    });
+</script>
+

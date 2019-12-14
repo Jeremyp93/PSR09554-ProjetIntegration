@@ -344,5 +344,53 @@ namespace BusinessLayer
                 throw e;
             }
         }
+
+        public static List<ProfesseurTableModel> getProfesseurTable()
+        {
+            try
+            {
+                var lstToReturn = new List<ProfesseurTableModel>();
+                foreach (var professeur in Data.GetProfesseurTable())
+                {
+                    if (lstToReturn.FirstOrDefault(x => x.id == professeur.PROFESSEUR_id) == null)
+                    {
+                        var newProf = new ProfesseurTableModel();
+                        newProf.id = professeur.PROFESSEUR_id;
+                        newProf.prenom = professeur.PROFESSEUR_prenom;
+                        newProf.nom = professeur.PROFESSEUR_nom;
+                        newProf.typeCours = professeur.TYPECOURS_libelle;
+                        newProf.discipline = professeur.TYPECOURS_discipline;
+                        newProf.niveau = professeur.NIVEAU_libelle;
+                        foreach (var prof in Data.GetProfesseurTable().Where(x => x.PROFESSEUR_id == newProf.id))
+                        {
+                            if (!newProf.typeCours.Contains(prof.TYPECOURS_libelle))
+                                newProf.typeCours = newProf.typeCours + ", " + prof.TYPECOURS_libelle;
+                            if (!newProf.discipline.Contains(prof.TYPECOURS_discipline))
+                                newProf.discipline = newProf.discipline + ", " + prof.TYPECOURS_discipline;
+                            if (!newProf.niveau.Contains(prof.NIVEAU_libelle))
+                                newProf.niveau = newProf.niveau + ", " + prof.NIVEAU_libelle;
+                        }
+                        lstToReturn.Add(newProf);
+                    }
+                }
+
+                return lstToReturn;
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
     }
 }

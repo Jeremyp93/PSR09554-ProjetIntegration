@@ -35,6 +35,7 @@ namespace DataAccess
         public virtual DbSet<Professeur> Professeurs { get; set; }
         public virtual DbSet<Reservation> Reservations { get; set; }
         public virtual DbSet<TypeCour> TypeCours { get; set; }
+        public virtual DbSet<ProfCour> ProfCours { get; set; }
     
         public virtual int AddCours(Nullable<System.DateTime> cours_debut, Nullable<System.DateTime> cours_fin, string typecours, string discipline, string niveau, Nullable<System.Guid> idProfesseur)
         {
@@ -180,6 +181,11 @@ namespace DataAccess
                 new ObjectParameter("idCours", typeof(System.Guid));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteCours", idCoursParameter);
+        }
+    
+        public virtual ObjectResult<GetProfesseurTable_Result> GetProfesseurTable()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetProfesseurTable_Result>("GetProfesseurTable");
         }
     }
 }

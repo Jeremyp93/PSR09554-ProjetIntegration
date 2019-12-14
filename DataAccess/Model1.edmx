@@ -66,6 +66,15 @@
           <Property Name="NIVEAU_libelle" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="NIVEAU_Couleur" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="ProfCours">
+          <Key>
+            <PropertyRef Name="PROFCOURS_ID" />
+          </Key>
+          <Property Name="PROFCOURS_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PROFESSEUR_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TYPECOURS_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="NIVEAU_ID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
         <EntityType Name="Professeur">
           <Key>
             <PropertyRef Name="PROFESSEUR_id" />
@@ -73,8 +82,6 @@
           <Property Name="PROFESSEUR_id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="PROFESSEUR_prenom" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="PROFESSEUR_nom" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="PROFESSEUR_typeCours" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="NIVEAU_id" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
         <EntityType Name="Reservation">
           <Key>
@@ -242,6 +249,7 @@
           <Parameter Name="typecours" Type="varchar" Mode="In" />
           <Parameter Name="niveau" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="GetProfesseurTable" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="name" Type="varchar" Mode="In" />
         </Function>
@@ -255,6 +263,7 @@
           <EntitySet Name="Cheval" EntityType="Self.Cheval" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cours" EntityType="Self.Cours" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Niveau" EntityType="Self.Niveau" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProfCours" EntityType="Self.ProfCours" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Professeur" EntityType="Self.Professeur" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Reservation" EntityType="Self.Reservation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TypeCours" EntityType="Self.TypeCours" Schema="dbo" store:Type="Tables" />
@@ -370,8 +379,6 @@
           <Property Name="PROFESSEUR_id" Type="Guid" Nullable="false" />
           <Property Name="PROFESSEUR_prenom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="PROFESSEUR_nom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="PROFESSEUR_typeCours" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="NIVEAU_id" Type="Guid" Nullable="false" />
           <NavigationProperty Name="Cours" Relationship="Self.FK_Cours_Professeur" FromRole="Professeur" ToRole="Cours" />
         </EntityType>
         <EntityType Name="Reservation">
@@ -565,8 +572,10 @@
           <Parameter Name="idCours" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="DeleteCours">
-            <Parameter Name="idCours" Mode="In" Type="Guid" />
+          <Parameter Name="idCours" Mode="In" Type="Guid" />
           </FunctionImport>
+          <EntitySet Name="ProfCours" EntityType="ExamenProjetIntegrationModel.ProfCour" />
+          <FunctionImport Name="GetProfesseurTable" ReturnType="Collection(ExamenProjetIntegrationModel.GetProfesseurTable_Result)" />
         </EntityContainer>
         <ComplexType Name="GetAllCours_Result">
           <Property Type="Guid" Name="COURS_id" Nullable="false" />
@@ -609,6 +618,23 @@
           <Property Type="String" Name="UserName" Nullable="false" MaxLength="256" />
           <Property Type="String" Name="PasswordHash" Nullable="true" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="256" />
+        </ComplexType>
+        <EntityType Name="ProfCour">
+          <Key>
+            <PropertyRef Name="PROFCOURS_ID" />
+          </Key>
+          <Property Name="PROFCOURS_ID" Type="Guid" Nullable="false" />
+          <Property Name="PROFESSEUR_ID" Type="Guid" Nullable="false" />
+          <Property Name="TYPECOURS_ID" Type="Guid" Nullable="false" />
+          <Property Name="NIVEAU_ID" Type="Guid" Nullable="false" />
+        </EntityType>
+        <ComplexType Name="GetProfesseurTable_Result">
+          <Property Type="Guid" Name="PROFESSEUR_id" Nullable="false" />
+          <Property Type="String" Name="PROFESSEUR_prenom" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PROFESSEUR_nom" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="TYPECOURS_libelle" Nullable="false" MaxLength="55" />
+          <Property Type="String" Name="TYPECOURS_discipline" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="NIVEAU_libelle" Nullable="false" MaxLength="50" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -680,9 +706,7 @@
                 <ScalarProperty Name="PROFESSEUR_id" ColumnName="PROFESSEUR_id" />
                 <ScalarProperty Name="PROFESSEUR_prenom" ColumnName="PROFESSEUR_prenom" />
                 <ScalarProperty Name="PROFESSEUR_nom" ColumnName="PROFESSEUR_nom" />
-                <ScalarProperty Name="PROFESSEUR_typeCours" ColumnName="PROFESSEUR_typeCours" />
-                <ScalarProperty Name="NIVEAU_id" ColumnName="NIVEAU_id" />
-              </MappingFragment>
+                </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Reservations">
@@ -782,6 +806,28 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="UpdateCoursParticipant" FunctionName="ExamenProjetIntegrationModel.Store.UpdateCoursParticipant" />
           <FunctionImportMapping FunctionImportName="DeleteCours" FunctionName="ExamenProjetIntegrationModel.Store.DeleteCours" />
+          <EntitySetMapping Name="ProfCours">
+            <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.ProfCour">
+              <MappingFragment StoreEntitySet="ProfCours">
+                <ScalarProperty Name="NIVEAU_ID" ColumnName="NIVEAU_ID" />
+                <ScalarProperty Name="TYPECOURS_ID" ColumnName="TYPECOURS_ID" />
+                <ScalarProperty Name="PROFESSEUR_ID" ColumnName="PROFESSEUR_ID" />
+                <ScalarProperty Name="PROFCOURS_ID" ColumnName="PROFCOURS_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetProfesseurTable" FunctionName="ExamenProjetIntegrationModel.Store.GetProfesseurTable">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetProfesseurTable_Result">
+                <ScalarProperty Name="PROFESSEUR_id" ColumnName="PROFESSEUR_id" />
+                <ScalarProperty Name="PROFESSEUR_prenom" ColumnName="PROFESSEUR_prenom" />
+                <ScalarProperty Name="PROFESSEUR_nom" ColumnName="PROFESSEUR_nom" />
+                <ScalarProperty Name="TYPECOURS_libelle" ColumnName="TYPECOURS_libelle" />
+                <ScalarProperty Name="TYPECOURS_discipline" ColumnName="TYPECOURS_discipline" />
+                <ScalarProperty Name="NIVEAU_libelle" ColumnName="NIVEAU_libelle" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
