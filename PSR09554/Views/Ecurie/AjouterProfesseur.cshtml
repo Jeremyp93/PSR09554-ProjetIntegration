@@ -1,0 +1,166 @@
+﻿@using PSR09554.Controllers
+
+@{
+    ViewBag.Title = "AjouterProfesseur";
+}
+
+<style>
+    [hidden] {
+        display: none !important;
+    }
+</style>
+
+<h2>AjouterProfesseur</h2>
+
+<link rel="stylesheet" type="text/css" href="~/Content/bootstrap-select.css" />
+<link rel="stylesheet" href="~/Content/bootstrap-select.min.css" />
+<script type="text/javascript" src="~/Scripts/bootstrap-select.js"></script>
+
+<form id="ProfesseurForm" class="form-horizontal">
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <label for="pic">Ajouter une photo de préférence 75x75</label>
+                <label class="btn btn-default">
+                    Browse <input type="file" accept="image/*" id="pic" hidden>
+                </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <img id="picProf" src="" style="width:40%; margin-top:10px;" accept=".jpg" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fas fa-user-alt"></i></span>
+                <input id="prenom" name="prenom" class="form-control" placeholder="Entrez un prénom" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fas fa-user-alt"></i></span>
+                <input id="nom" name="nom" class="form-control" placeholder="Entrez un nom" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fas fa-map-signs"></i></span>
+                <select id="typeCours" name="typeCours" class="selectpicker form-control" title="Veuillez choisir un cours...">
+                    <option value="Collectif">Collectif</option>
+                    <option value="Individuel">Individuel</option>
+                    <option value="Randonnee">Randonnée</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group discipline">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fas fa-map-signs"></i></span>
+                <select class="selectpicker form-control" id="discipline" multiple data-actions-box="true" title="Discipline...">
+                    <option value="Dressage">Dressage</option>
+                    <option value="Obstacle">Obstacle</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fas fa-award"></i></span>
+                <select class="selectpicker form-control" id="niveau" multiple data-actions-box="true" title="Niveau...">
+                    <option value="Debutant">Débutant</option>
+                    <option value="Moyen">Intermediaire</option>
+                    <option value="Confirme">Confirmé</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-3 inputGroupContainer">
+            <input type="button" class="btn btn-primary" onclick="" value="Ajouter" />
+        </div>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function() {
+        $('#typeCours').change(function() {
+            if ($('#typeCours').val() == "Randonnee") {
+                $('.discipline').hide();
+            } else {
+                $('.discipline').show();
+            }
+        });
+        $('#pic').change(function () {
+            showMyImage(this);
+        });
+
+    });
+
+    function UploadImage() {
+        // Checking whether FormData is available in browser  
+        if (window.FormData !== undefined) {  
+  
+            var fileUpload = $("#pic").get(0);  
+            var files = fileUpload.files;  
+              
+            // Create FormData object  
+            var fileData = new FormData();  
+  
+            // Looping over all files and add it to FormData object  
+            for (var i = 0; i < files.length; i++) {  
+                fileData.append(files[i].name, files[i]);  
+            }  
+              
+            // Adding one more key to FormData object  
+            //fileData.append('username', ‘Manas’);  
+  
+            $.ajax({  
+                url: '@Url.Action("UploadFiles", "Ecurie")',
+                type: "POST",  
+                contentType: false, // Not to set any content header  
+                processData: false, // Not to process data  
+                data: fileData,  
+                success: function (result) {  
+                    var src = "../Images/Chevaux/" + result;
+                    $("#picProf").attr("src", src);  
+                },  
+                error: function (err) {  
+                    alert(err.statusText);  
+                }  
+            });  
+        } else {  
+            alert("FormData is not supported.");  
+        }  
+    }
+
+    function showMyImage(fileInput) {
+        var files = fileInput.files;
+        for (var i = 0; i < files.length; i++) {           
+            var file = files[i];
+            var imageType = /image.*/;     
+            if (!file.type.match(imageType)) {
+                continue;
+            }           
+            var img=document.getElementById("picProf");            
+            img.file = file;    
+            var reader = new FileReader();
+            reader.onload = (function(aImg) { 
+                return function(e) { 
+                    aImg.src = e.target.result; 
+                }; 
+            })(img);
+            reader.readAsDataURL(file);
+        }       
+    }
+</script>

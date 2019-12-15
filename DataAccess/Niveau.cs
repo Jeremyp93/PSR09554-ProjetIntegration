@@ -17,8 +17,9 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Niveau()
         {
-            this.Chevals = new HashSet<Cheval>();
+            this.ChevalCours = new HashSet<ChevalCour>();
             this.Cours = new HashSet<Cour>();
+            this.ProfCours = new HashSet<ProfCour>();
         }
     
         public System.Guid NIVEAU_id { get; set; }
@@ -26,8 +27,10 @@ namespace DataAccess
         public string NIVEAU_Couleur { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Cheval> Chevals { get; set; }
+        public virtual ICollection<ChevalCour> ChevalCours { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Cour> Cours { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProfCour> ProfCours { get; set; }
     }
 }

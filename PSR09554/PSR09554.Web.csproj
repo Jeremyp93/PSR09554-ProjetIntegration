@@ -737,6 +737,8 @@
     <Content Include="Views\Ecurie\Reservation.cshtml" />
     <Content Include="Views\Ecurie\AjouterCours.cshtml" />
     <Content Include="Views\Ecurie\Professeurs.cshtml" />
+    <Content Include="Views\Ecurie\Chevaux.cshtml" />
+    <Content Include="Views\Ecurie\AjouterProfesseur.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

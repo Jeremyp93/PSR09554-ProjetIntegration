@@ -17,16 +17,15 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Cheval()
         {
+            this.ChevalCours = new HashSet<ChevalCour>();
             this.Reservations = new HashSet<Reservation>();
         }
     
         public System.Guid CHEVAL_id { get; set; }
         public string CHEVAL_nom { get; set; }
-        public System.Guid TYPECOURS_id { get; set; }
-        public System.Guid NIVEAU_id { get; set; }
     
-        public virtual Niveau Niveau { get; set; }
-        public virtual TypeCour TypeCour { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ChevalCour> ChevalCours { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Reservation> Reservations { get; set; }
     }

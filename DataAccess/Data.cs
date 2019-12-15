@@ -118,5 +118,14 @@ namespace DataAccess
                 return lstToReturn;
             }
         }
+
+        public static List<GetChevauxTable_Result> GetChevauxTable()
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                var lstToReturn = db.GetChevauxTable().ToList();
+                return lstToReturn;
+            }
+        }
     }
 }

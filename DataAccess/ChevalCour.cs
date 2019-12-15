@@ -12,15 +12,15 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class ProfCour
+    public partial class ChevalCour
     {
-        public System.Guid PROFCOURS_ID { get; set; }
-        public System.Guid PROFESSEUR_ID { get; set; }
-        public System.Guid TYPECOURS_ID { get; set; }
-        public System.Guid NIVEAU_ID { get; set; }
+        public System.Guid CHEVALCOURS_id { get; set; }
+        public System.Guid CHEVAL_id { get; set; }
+        public System.Guid TYPECOURS_id { get; set; }
+        public System.Guid NIVEAU_id { get; set; }
     
+        public virtual Cheval Cheval { get; set; }
         public virtual Niveau Niveau { get; set; }
-        public virtual Professeur Professeur { get; set; }
         public virtual TypeCour TypeCour { get; set; }
     }
 }

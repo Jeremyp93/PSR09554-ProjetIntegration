@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -114,6 +115,80 @@ namespace PSR09554.Controllers
         public ActionResult Professeurs()
         {
             return View();
+        }
+
+        [HttpGet]
+        public ActionResult Chevaux()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> AjouterProfesseur()
+        {
+            if (Session["TokenNumber"] != null)
+            {
+                await ValidateToken(Session["TokenNumber"].ToString());
+                if (Session["ValidToken"].ToString() == "202")
+                {
+                    ViewBag.Token = Session["TokenNumber"].ToString();
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            return RedirectToAction("Login", "Account");
+        }
+
+        [HttpPost]
+        public ActionResult UploadFiles()
+        {
+            // Checking no of files injected in Request object  
+            if (Request.Files.Count > 0)
+            {
+                try
+                {
+                    //  Get all files from Request object  
+                    HttpFileCollectionBase files = Request.Files;
+                    string fname = String.Empty;
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        //string path = AppDomain.CurrentDomain.BaseDirectory + "Uploads/";  
+                        //string filename = Path.GetFileName(Request.Files[i].FileName);  
+
+                        HttpPostedFileBase file = files[i];
+                        string fullname = String.Empty;
+
+                        // Checking for Internet Explorer  
+                        if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
+                        {
+                            string[] testfiles = file.FileName.Split(new char[] { '\\' });
+                            fname = testfiles[testfiles.Length - 1];
+                        }
+                        else
+                        {
+                            fname = file.FileName;
+                        }
+
+                        // Get the complete folder path and store the file inside it.  
+                        fullname = Path.Combine(Server.MapPath("~/Images/Professeurs/"), fname);
+                        file.SaveAs(fullname);
+                    }
+                    // Returns message that successfully uploaded  
+                    return Json(fname);
+                }
+                catch (Exception ex)
+                {
+                    return Json("Error occurred. Error details: " + ex.Message);
+                }
+            }
+            else
+            {
+                return Json("No files selected.");
+            }
         }
     }
 }

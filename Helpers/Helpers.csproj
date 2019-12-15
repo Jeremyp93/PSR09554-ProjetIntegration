@@ -49,6 +49,7 @@
     <Compile Include="CUtil.cs" />
     <Compile Include="Models\AuthenticationModel.cs" />
     <Compile Include="Models\ChevauxFiltreModel.cs" />
+    <Compile Include="Models\ChevauxTableModel.cs" />
     <Compile Include="Models\CoursEventModel.cs" />
     <Compile Include="Models\CoursFiltreDetailModel.cs" />
     <Compile Include="Models\CoursFiltreModel.cs" />

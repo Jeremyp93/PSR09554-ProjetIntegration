@@ -177,5 +177,13 @@ namespace PSR09554.API.Controllers
             var professeur = BL.getProfesseurTable();
             return Json(professeur);
         }
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("v1/ecurie/Chevaux")]
+        public IHttpActionResult ChevauxTable()
+        {
+            var chevaux = BL.getChevauxTable();
+            return Json(chevaux);
+        }
     }
 }

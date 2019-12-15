@@ -4,24 +4,29 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="d640d7168ebf4c2e942e177edf786dfd" Name="Diagram1">
-        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.AspNetRole" Width="1.5" PointX="0.75" PointY="9.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.AspNetUser" Width="1.5" PointX="3" PointY="8.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.Cheval" Width="1.5" PointX="3" PointY="4.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.Cour" Width="1.5" PointX="6" PointY="4.25" IsExpanded="true" />
+      <Diagram DiagramId="a0d9ca66993945f6b8f7925c81a581d8" Name="Diagram1">
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.AspNetRole" Width="1.5" PointX="2.75" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.AspNetUser" Width="1.5" PointX="5" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.Cheval" Width="1.5" PointX="0.75" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.ChevalCour" Width="1.5" PointX="3" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.Cour" Width="1.5" PointX="6" PointY="4.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ExamenProjetIntegrationModel.Niveau" Width="1.5" PointX="0.75" PointY="4.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.Professeur" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.Reservation" Width="1.5" PointX="8.25" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.TypeCour" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />
-        <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cheval_Niveau" ManuallyRouted="false" />
-        <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cheval_TypeCours" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.ProfCour" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.Professeur" Width="1.5" PointX="0.75" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.Reservation" Width="1.5" PointX="8.25" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.TypeCour" Width="1.5" PointX="0.75" PointY="8.375" IsExpanded="true" />
+        <AssociationConnector Association="ExamenProjetIntegrationModel.FK_ChevalCours_Cheval" ManuallyRouted="false" />
         <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Reservation_Cheval" ManuallyRouted="false" />
+        <AssociationConnector Association="ExamenProjetIntegrationModel.FK_ChevalCours_Niveau" ManuallyRouted="false" />
+        <AssociationConnector Association="ExamenProjetIntegrationModel.FK_ChevalCours_TypeCours" ManuallyRouted="false" />
         <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cours_Niveau" ManuallyRouted="false" />
         <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cours_Professeur" ManuallyRouted="false" />
         <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Cours_TypeCours" ManuallyRouted="false" />
         <AssociationConnector Association="ExamenProjetIntegrationModel.FK_Reservation_Cours" ManuallyRouted="false" />
+        <AssociationConnector Association="ExamenProjetIntegrationModel.FK_ProfCours_Niveau" ManuallyRouted="false" />
+        <AssociationConnector Association="ExamenProjetIntegrationModel.FK_ProfCours_Professeur" ManuallyRouted="false" />
+        <AssociationConnector Association="ExamenProjetIntegrationModel.FK_ProfCours_TypeCours" ManuallyRouted="false" />
         <AssociationConnector Association="ExamenProjetIntegrationModel.AspNetUserRoles" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.ProfCour" Width="1.5" PointX="6.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

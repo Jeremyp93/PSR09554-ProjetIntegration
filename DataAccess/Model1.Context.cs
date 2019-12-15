@@ -30,12 +30,13 @@ namespace DataAccess
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<Cheval> Chevals { get; set; }
+        public virtual DbSet<ChevalCour> ChevalCours { get; set; }
         public virtual DbSet<Cour> Cours { get; set; }
         public virtual DbSet<Niveau> Niveaux { get; set; }
+        public virtual DbSet<ProfCour> ProfCours { get; set; }
         public virtual DbSet<Professeur> Professeurs { get; set; }
         public virtual DbSet<Reservation> Reservations { get; set; }
         public virtual DbSet<TypeCour> TypeCours { get; set; }
-        public virtual DbSet<ProfCour> ProfCours { get; set; }
     
         public virtual int AddCours(Nullable<System.DateTime> cours_debut, Nullable<System.DateTime> cours_fin, string typecours, string discipline, string niveau, Nullable<System.Guid> idProfesseur)
         {
@@ -83,6 +84,15 @@ namespace DataAccess
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddReservation", idUserParameter, idCoursParameter, idChevalParameter);
         }
     
+        public virtual int DeleteCours(Nullable<System.Guid> idCours)
+        {
+            var idCoursParameter = idCours.HasValue ?
+                new ObjectParameter("idCours", idCours) :
+                new ObjectParameter("idCours", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteCours", idCoursParameter);
+        }
+    
         public virtual ObjectResult<GetAllCours_Result> GetAllCours()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetAllCours_Result>("GetAllCours");
@@ -107,6 +117,11 @@ namespace DataAccess
                 new ObjectParameter("idCours", typeof(System.Guid));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetChevauxFiltre_Result>("GetChevauxFiltre", typecoursParameter, typedisciplineParameter, niveauParameter, idCoursParameter);
+        }
+    
+        public virtual ObjectResult<GetChevauxTable_Result> GetChevauxTable()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetChevauxTable_Result>("GetChevauxTable");
         }
     
         public virtual ObjectResult<GetFiltre_Result> GetFiltre(string typecours, string typediscipline, string niveau, Nullable<System.DateTime> date, string user)
@@ -156,6 +171,11 @@ namespace DataAccess
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetProfesseur_Result>("GetProfesseur", typecoursParameter, niveauParameter);
         }
     
+        public virtual ObjectResult<GetProfesseurTable_Result> GetProfesseurTable()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetProfesseurTable_Result>("GetProfesseurTable");
+        }
+    
         public virtual ObjectResult<GetUser_Result> GetUser(string name)
         {
             var nameParameter = name != null ?
@@ -172,20 +192,6 @@ namespace DataAccess
                 new ObjectParameter("idCours", typeof(System.Guid));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UpdateCoursParticipant", idCoursParameter);
-        }
-    
-        public virtual int DeleteCours(Nullable<System.Guid> idCours)
-        {
-            var idCoursParameter = idCours.HasValue ?
-                new ObjectParameter("idCours", idCours) :
-                new ObjectParameter("idCours", typeof(System.Guid));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteCours", idCoursParameter);
-        }
-    
-        public virtual ObjectResult<GetProfesseurTable_Result> GetProfesseurTable()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetProfesseurTable_Result>("GetProfesseurTable");
         }
     }
 }

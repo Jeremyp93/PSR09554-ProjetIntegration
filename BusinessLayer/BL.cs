@@ -392,5 +392,52 @@ namespace BusinessLayer
                 throw e;
             }
         }
+
+        public static List<ChevauxTableModel> getChevauxTable()
+        {
+            try
+            {
+                var lstToReturn = new List<ChevauxTableModel>();
+                foreach (var cheval in Data.GetChevauxTable())
+                {
+                    if (lstToReturn.FirstOrDefault(x => x.id == cheval.CHEVAL_id) == null)
+                    {
+                        var newCheval = new ChevauxTableModel();
+                        newCheval.id = cheval.CHEVAL_id;
+                        newCheval.nom = cheval.CHEVAL_nom;
+                        newCheval.typeCours = cheval.TYPECOURS_libelle;
+                        newCheval.discipline = cheval.TYPECOURS_discipline;
+                        newCheval.niveau = cheval.NIVEAU_libelle;
+                        foreach (var chev in Data.GetChevauxTable().Where(x => x.CHEVAL_id == newCheval.id))
+                        {
+                            if (!newCheval.typeCours.Contains(chev.TYPECOURS_libelle))
+                                newCheval.typeCours = newCheval.typeCours + ", " + chev.TYPECOURS_libelle;
+                            if (!newCheval.discipline.Contains(chev.TYPECOURS_discipline))
+                                newCheval.discipline = newCheval.discipline + ", " + chev.TYPECOURS_discipline;
+                            if (!newCheval.niveau.Contains(chev.NIVEAU_libelle))
+                                newCheval.niveau = newCheval.niveau + ", " + chev.NIVEAU_libelle;
+                        }
+                        lstToReturn.Add(newCheval);
+                    }
+                }
+
+                return lstToReturn;
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
     }
 }
