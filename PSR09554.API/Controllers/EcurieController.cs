@@ -185,5 +185,36 @@ namespace PSR09554.API.Controllers
             var chevaux = BL.getChevauxTable();
             return Json(chevaux);
         }
+
+        [System.Web.Http.Authorize(Roles = "Admin")]
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("v1/ecurie/AjouterProfesseur")]
+        public IHttpActionResult AjouterProfesseur([FromBody] ProfesseurNewModel professeur)
+        {
+            string message = string.Empty;
+            using (var txscope = new TransactionScope(TransactionScopeOption.RequiresNew))
+            {
+                try
+                {
+                    var idProfesseur = BL.addProfesseur(professeur.prenom, professeur.nom);
+
+                    foreach (var discipline in professeur.discipline)
+                    {
+                        foreach (var niveau in professeur.niveau)
+                        {
+                            BL.addProfesseurCours(idProfesseur, professeur.typeCours, discipline, niveau);
+                        }
+                    }
+                    txscope.Complete();
+                    message = "Le professeur " + professeur.prenom + " " + professeur.nom + " a été ajouté !";
+                    return Content(HttpStatusCode.Created, idProfesseur);
+                }
+                catch
+                {
+                    txscope.Dispose();
+                    return BadRequest();
+                }
+            }
+        }
     }
 }

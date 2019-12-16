@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -125,6 +126,24 @@ namespace DataAccess
             {
                 var lstToReturn = db.GetChevauxTable().ToList();
                 return lstToReturn;
+            }
+        }
+
+        public static Guid AddProfesseur(string prenom, string nom)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                ObjectParameter objParam = new ObjectParameter("identity", typeof(Guid));
+                var resultToReturn = db.AjouterProfesseur(prenom, nom, objParam);
+                return  Guid.Parse(objParam.Value.ToString());
+            }
+        }
+
+        public static void AddProfesseurCours(Guid idProfesseur, string typeCours, string discipline, string niveau)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                db.AjouterProfesseurCours(idProfesseur, typeCours, discipline, niveau);
             }
         }
     }

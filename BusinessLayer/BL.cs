@@ -439,5 +439,52 @@ namespace BusinessLayer
                 throw e;
             }
         }
+
+        public static Guid addProfesseur(string prenom, string nom)
+        {
+            try
+            {
+                var data = Data.AddProfesseur(prenom, nom);
+                return data;
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
+
+        public static void addProfesseurCours(Guid idProfesseur, string typeCours, string discipline, string niveau)
+        {
+            try
+            {
+                Data.AddProfesseurCours(idProfesseur, typeCours, discipline, niveau);
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿@using PSR09554.Controllers
+﻿@using Helpers
+@using PSR09554.Controllers
 
 @{
     ViewBag.Title = "AjouterProfesseur";
@@ -87,12 +88,23 @@
 
     <div class="form-group">
         <div class="col-sm-3 inputGroupContainer">
-            <input type="button" class="btn btn-primary" onclick="" value="Ajouter" />
+            <input type="button" class="btn btn-primary" onclick="addProfesseur();" value="Ajouter" />
         </div>
     </div>
 </form>
 
+@{
+    var path = CUtil.GetValueBaseOnKey("apiBaseUrl");
+    var sitePath = CUtil.GetValueBaseOnKey("siteBaseUrl");
+    var ecuriePath = path + CUtil.GetValueBaseOnKey("GameUrl");
+}
+
 <script>
+    var token = '@ViewBag.Token'
+    var headers = {};
+    if (token) {
+        headers.Authorization = 'Bearer ' + token;
+    }
     $(document).ready(function() {
         $('#typeCours').change(function() {
             if ($('#typeCours').val() == "Randonnee") {
@@ -107,60 +119,85 @@
 
     });
 
-    function UploadImage() {
-        // Checking whether FormData is available in browser  
-        if (window.FormData !== undefined) {  
-  
-            var fileUpload = $("#pic").get(0);  
-            var files = fileUpload.files;  
-              
-            // Create FormData object  
-            var fileData = new FormData();  
-  
-            // Looping over all files and add it to FormData object  
-            for (var i = 0; i < files.length; i++) {  
-                fileData.append(files[i].name, files[i]);  
-            }  
-              
-            // Adding one more key to FormData object  
-            //fileData.append('username', ‘Manas’);  
-  
-            $.ajax({  
-                url: '@Url.Action("UploadFiles", "Ecurie")',
-                type: "POST",  
-                contentType: false, // Not to set any content header  
-                processData: false, // Not to process data  
-                data: fileData,  
-                success: function (result) {  
-                    var src = "../Images/Chevaux/" + result;
-                    $("#picProf").attr("src", src);  
-                },  
-                error: function (err) {  
-                    alert(err.statusText);  
-                }  
-            });  
-        } else {  
-            alert("FormData is not supported.");  
-        }  
+    function UploadImage(id) {
+        // Checking whether FormData is available in browser
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#pic").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+
+            // Adding one more key to FormData object
+            //fileData.append('username', ‘Manas’);
+
+            $.ajax({
+                url: '@Url.Action("UploadFiles", "Ecurie")'+'?id='+id,
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+                    alert("Le professeur a été ajouté !");
+                },
+                error: function (err) {
+                    alert(err.statusText);
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
     }
 
     function showMyImage(fileInput) {
         var files = fileInput.files;
-        for (var i = 0; i < files.length; i++) {           
+        for (var i = 0; i < files.length; i++) {
             var file = files[i];
-            var imageType = /image.*/;     
+            var imageType = /image.*/;
             if (!file.type.match(imageType)) {
                 continue;
-            }           
-            var img=document.getElementById("picProf");            
-            img.file = file;    
+            }
+            var img=document.getElementById("picProf");
+            img.file = file;
             var reader = new FileReader();
-            reader.onload = (function(aImg) { 
-                return function(e) { 
-                    aImg.src = e.target.result; 
-                }; 
+            reader.onload = (function(aImg) {
+                return function(e) {
+                    aImg.src = e.target.result;
+                };
             })(img);
             reader.readAsDataURL(file);
-        }       
+        }
+    }
+
+    function addProfesseur() {
+        var myjson = {
+            prenom: $('#prenom').val(),
+            nom: $('#nom').val(),
+            typeCours: $('#typeCours').val(),
+            discipline: $('#discipline').val(),
+            niveau: $('#niveau').val()
+        };
+        $.ajax({
+            url: '@ecuriePath' + 'AjouterProfesseur',
+            type: 'POST',
+            headers: headers,
+            data: JSON.stringify(myjson),
+            dataType: 'json',
+            async: false,
+            contentType: 'application/json',
+            success: function (data) {
+                UploadImage(data);
+                window.location.replace('@sitePath'+'/Ecurie/Professeurs');
+            },
+            error: function(data) {
+                alert('failed');
+            }
+        });
     }
 </script>

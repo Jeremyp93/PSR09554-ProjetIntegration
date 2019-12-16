@@ -280,6 +280,17 @@
           <Parameter Name="idCours" Type="uniqueidentifier" Mode="In" />
           <Parameter Name="idCheval" Type="uniqueidentifier" Mode="In" />
         </Function>
+        <Function Name="AjouterProfesseur" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="prenom" Type="varchar" Mode="In" />
+          <Parameter Name="nom" Type="varchar" Mode="In" />
+          <Parameter Name="identity" Type="uniqueidentifier" Mode="InOut" />
+        </Function>
+        <Function Name="AjouterProfesseurCours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idProfesseur" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="typeCours" Type="varchar" Mode="In" />
+          <Parameter Name="discipline" Type="varchar" Mode="In" />
+          <Parameter Name="niveau" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="DeleteCours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="idCours" Type="uniqueidentifier" Mode="In" />
         </Function>
@@ -708,6 +719,17 @@
             <Parameter Name="idCours" Mode="In" Type="Guid" />
             <Parameter Name="idCheval" Mode="In" Type="Guid" />
           </FunctionImport>
+          <FunctionImport Name="AjouterProfesseur" ReturnType="Collection(Guid)">
+            <Parameter Name="prenom" Mode="In" Type="String" />
+            <Parameter Name="nom" Mode="In" Type="String" />
+            <Parameter Name="identity" Mode="InOut" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="AjouterProfesseurCours">
+            <Parameter Name="idProfesseur" Mode="In" Type="Guid" />
+            <Parameter Name="typeCours" Mode="In" Type="String" />
+            <Parameter Name="discipline" Mode="In" Type="String" />
+            <Parameter Name="niveau" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="DeleteCours">
             <Parameter Name="idCours" Mode="In" Type="Guid" />
           </FunctionImport>
@@ -918,6 +940,8 @@
           </AssociationSetMapping>
           <FunctionImportMapping FunctionImportName="AddCours" FunctionName="ExamenProjetIntegrationModel.Store.AddCours" />
           <FunctionImportMapping FunctionImportName="AddReservation" FunctionName="ExamenProjetIntegrationModel.Store.AddReservation" />
+          <FunctionImportMapping FunctionImportName="AjouterProfesseur" FunctionName="ExamenProjetIntegrationModel.Store.AjouterProfesseur" />
+          <FunctionImportMapping FunctionImportName="AjouterProfesseurCours" FunctionName="ExamenProjetIntegrationModel.Store.AjouterProfesseurCours" />
           <FunctionImportMapping FunctionImportName="DeleteCours" FunctionName="ExamenProjetIntegrationModel.Store.DeleteCours" />
           <FunctionImportMapping FunctionImportName="GetAllCours" FunctionName="ExamenProjetIntegrationModel.Store.GetAllCours">
             <ResultMapping>

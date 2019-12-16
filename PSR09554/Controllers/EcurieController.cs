@@ -144,7 +144,7 @@ namespace PSR09554.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadFiles()
+        public ActionResult UploadFiles(string id)
         {
             // Checking no of files injected in Request object  
             if (Request.Files.Count > 0)
@@ -163,16 +163,17 @@ namespace PSR09554.Controllers
                         string fullname = String.Empty;
 
                         // Checking for Internet Explorer  
-                        if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
-                        {
-                            string[] testfiles = file.FileName.Split(new char[] { '\\' });
-                            fname = testfiles[testfiles.Length - 1];
-                        }
-                        else
-                        {
-                            fname = file.FileName;
-                        }
+                        //if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
+                        //{
+                        //    string[] testfiles = file.FileName.Split(new char[] { '\\' });
+                        //    fname = testfiles[testfiles.Length - 1];
+                        //}
+                        //else
+                        //{
+                        //    fname = file.FileName;
+                        //}
 
+                        fname = id + ".jpg";
                         // Get the complete folder path and store the file inside it.  
                         fullname = Path.Combine(Server.MapPath("~/Images/Professeurs/"), fname);
                         file.SaveAs(fullname);

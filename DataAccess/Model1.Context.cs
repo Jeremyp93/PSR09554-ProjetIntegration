@@ -84,6 +84,40 @@ namespace DataAccess
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddReservation", idUserParameter, idCoursParameter, idChevalParameter);
         }
     
+        public virtual ObjectResult<Nullable<System.Guid>> AjouterProfesseur(string prenom, string nom, ObjectParameter identity)
+        {
+            var prenomParameter = prenom != null ?
+                new ObjectParameter("prenom", prenom) :
+                new ObjectParameter("prenom", typeof(string));
+    
+            var nomParameter = nom != null ?
+                new ObjectParameter("nom", nom) :
+                new ObjectParameter("nom", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<System.Guid>>("AjouterProfesseur", prenomParameter, nomParameter, identity);
+        }
+    
+        public virtual int AjouterProfesseurCours(Nullable<System.Guid> idProfesseur, string typeCours, string discipline, string niveau)
+        {
+            var idProfesseurParameter = idProfesseur.HasValue ?
+                new ObjectParameter("idProfesseur", idProfesseur) :
+                new ObjectParameter("idProfesseur", typeof(System.Guid));
+    
+            var typeCoursParameter = typeCours != null ?
+                new ObjectParameter("typeCours", typeCours) :
+                new ObjectParameter("typeCours", typeof(string));
+    
+            var disciplineParameter = discipline != null ?
+                new ObjectParameter("discipline", discipline) :
+                new ObjectParameter("discipline", typeof(string));
+    
+            var niveauParameter = niveau != null ?
+                new ObjectParameter("niveau", niveau) :
+                new ObjectParameter("niveau", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AjouterProfesseurCours", idProfesseurParameter, typeCoursParameter, disciplineParameter, niveauParameter);
+        }
+    
         public virtual int DeleteCours(Nullable<System.Guid> idCours)
         {
             var idCoursParameter = idCours.HasValue ?
