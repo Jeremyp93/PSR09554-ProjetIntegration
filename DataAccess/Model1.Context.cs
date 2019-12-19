@@ -227,5 +227,14 @@ namespace DataAccess
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UpdateCoursParticipant", idCoursParameter);
         }
+    
+        public virtual ObjectResult<GetReservationUser_Result> GetReservationUser(string idUser)
+        {
+            var idUserParameter = idUser != null ?
+                new ObjectParameter("idUser", idUser) :
+                new ObjectParameter("idUser", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetReservationUser_Result>("GetReservationUser", idUserParameter);
+        }
     }
 }

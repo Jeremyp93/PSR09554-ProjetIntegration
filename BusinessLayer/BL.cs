@@ -486,5 +486,44 @@ namespace BusinessLayer
                 throw e;
             }
         }
+
+        public static List<ReservationUserModel> getReservationUser(string id)
+        {
+            try
+            {
+                var lstToReturn = new List<ReservationUserModel>();
+                foreach (var reservation in Data.GetReservationUser(id))
+                {
+                    lstToReturn.Add(new ReservationUserModel
+                    {
+                        idReservation = reservation.RESERVATION_id,
+                        heureDebut = reservation.COURS_debut,
+                        heureFin = reservation.COURS_fin,
+                        typeDeCours = reservation.TYPECOURS_libelle,
+                        discipline = reservation.TYPECOURS_discipline,
+                        niveau = reservation.NIVEAU_libelle,
+                        professeur_prenom = reservation.PROFESSEUR_prenom,
+                        professeur_nom = reservation.PROFESSEUR_nom
+                    });
+                }
+
+                return lstToReturn;
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
     }
 }

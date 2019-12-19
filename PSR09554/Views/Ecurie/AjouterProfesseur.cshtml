@@ -192,11 +192,12 @@
             async: false,
             contentType: 'application/json',
             success: function (data) {
-                UploadImage(data);
+                if($("#pic").get(0))
+                    UploadImage(data);
                 window.location.replace('@sitePath'+'/Ecurie/Professeurs');
             },
-            error: function(data) {
-                alert('failed');
+            error: function(xhr, status, error) {
+                alert(JSON.parse(xhr.responseText).Message);
             }
         });
     }

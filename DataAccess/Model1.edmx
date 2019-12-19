@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ExamenProjetIntegrationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ExamenProjetIntegrationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AspNetRoles">
           <Key>
             <PropertyRef Name="Id" />
@@ -317,6 +317,9 @@
           <Parameter Name="niveau" Type="varchar" Mode="In" />
         </Function>
         <Function Name="GetProfesseurTable" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetReservationUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idUser" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="GetUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="name" Type="varchar" Mode="In" />
         </Function>
@@ -388,8 +391,7 @@
             <End Role="Reservation" EntitySet="Reservation" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ExamenProjetIntegrationModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -731,7 +733,7 @@
             <Parameter Name="niveau" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DeleteCours">
-            <Parameter Name="idCours" Mode="In" Type="Guid" />
+          <Parameter Name="idCours" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="GetAllCours" ReturnType="Collection(ExamenProjetIntegrationModel.GetAllCours_Result)" />
           <FunctionImport Name="GetChevauxFiltre" ReturnType="Collection(ExamenProjetIntegrationModel.GetChevauxFiltre_Result)">
@@ -749,7 +751,7 @@
             <Parameter Name="user" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="GetFiltreDetail" ReturnType="Collection(ExamenProjetIntegrationModel.GetFiltreDetail_Result)">
-            <Parameter Name="id" Mode="In" Type="Guid" />
+          <Parameter Name="id" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="GetProfesseur" ReturnType="Collection(ExamenProjetIntegrationModel.GetProfesseur_Result)">
             <Parameter Name="typecours" Mode="In" Type="String" />
@@ -757,10 +759,13 @@
           </FunctionImport>
           <FunctionImport Name="GetProfesseurTable" ReturnType="Collection(ExamenProjetIntegrationModel.GetProfesseurTable_Result)" />
           <FunctionImport Name="GetUser" ReturnType="Collection(ExamenProjetIntegrationModel.GetUser_Result)">
-            <Parameter Name="name" Mode="In" Type="String" />
+          <Parameter Name="name" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="UpdateCoursParticipant">
-            <Parameter Name="idCours" Mode="In" Type="Guid" />
+          <Parameter Name="idCours" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="GetReservationUser" ReturnType="Collection(ExamenProjetIntegrationModel.GetReservationUser_Result)">
+            <Parameter Name="idUser" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GetAllCours_Result">
@@ -819,6 +824,17 @@
           <Property Type="String" Name="UserName" Nullable="false" MaxLength="256" />
           <Property Type="String" Name="PasswordHash" Nullable="true" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="256" />
+        </ComplexType>
+        <ComplexType Name="GetReservationUser_Result">
+          <Property Type="Guid" Name="RESERVATION_id" Nullable="false" />
+          <Property Type="DateTime" Name="COURS_debut" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="COURS_fin" Nullable="false" Precision="23" />
+          <Property Type="String" Name="NIVEAU_libelle" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="CHEVAL_nom" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PROFESSEUR_nom" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PROFESSEUR_prenom" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="TYPECOURS_libelle" Nullable="false" MaxLength="55" />
+          <Property Type="String" Name="TYPECOURS_discipline" Nullable="true" MaxLength="50" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1033,6 +1049,21 @@
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="UpdateCoursParticipant" FunctionName="ExamenProjetIntegrationModel.Store.UpdateCoursParticipant" />
+          <FunctionImportMapping FunctionImportName="GetReservationUser" FunctionName="ExamenProjetIntegrationModel.Store.GetReservationUser">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetReservationUser_Result">
+                <ScalarProperty Name="RESERVATION_id" ColumnName="RESERVATION_id" />
+                <ScalarProperty Name="COURS_debut" ColumnName="COURS_debut" />
+                <ScalarProperty Name="COURS_fin" ColumnName="COURS_fin" />
+                <ScalarProperty Name="NIVEAU_libelle" ColumnName="NIVEAU_libelle" />
+                <ScalarProperty Name="CHEVAL_nom" ColumnName="CHEVAL_nom" />
+                <ScalarProperty Name="PROFESSEUR_nom" ColumnName="PROFESSEUR_nom" />
+                <ScalarProperty Name="PROFESSEUR_prenom" ColumnName="PROFESSEUR_prenom" />
+                <ScalarProperty Name="TYPECOURS_libelle" ColumnName="TYPECOURS_libelle" />
+                <ScalarProperty Name="TYPECOURS_discipline" ColumnName="TYPECOURS_discipline" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

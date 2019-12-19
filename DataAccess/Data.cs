@@ -134,7 +134,7 @@ namespace DataAccess
             using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
             {
                 ObjectParameter objParam = new ObjectParameter("identity", typeof(Guid));
-                var resultToReturn = db.AjouterProfesseur(prenom, nom, objParam);
+                var resultToReturn = db.AjouterProfesseur(prenom, nom, objParam).Count();
                 return  Guid.Parse(objParam.Value.ToString());
             }
         }
@@ -144,6 +144,15 @@ namespace DataAccess
             using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
             {
                 db.AjouterProfesseurCours(idProfesseur, typeCours, discipline, niveau);
+            }
+        }
+
+        public static List<GetReservationUser_Result> GetReservationUser(string id)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                var lstToReturn = db.GetReservationUser(id).ToList();
+                return lstToReturn;
             }
         }
     }

@@ -1,0 +1,66 @@
+﻿@using Helpers
+
+@{
+    ViewBag.Title = "GetReservationUser";
+}
+
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+<h2>GetReservationUser</h2>
+
+<div class="container">
+    <div id="accordion" class="panel-group"></div>
+</div>
+
+@{
+    var path = CUtil.GetValueBaseOnKey("apiBaseUrl");
+    var ecuriePath = path + CUtil.GetValueBaseOnKey("GameUrl");
+}
+
+<script>
+    var token = '@ViewBag.Token';
+    var headers = {};
+    if (token) {
+        headers.Authorization = 'Bearer ' + token;
+    }
+
+    $(document).ready(function() {
+        LoadReservation();
+    });
+
+    function LoadReservation() {
+        $.ajax({
+            url: '@ecuriePath' + 'MesReservations',
+            type: 'GET',
+            headers: headers,
+            success: function (data) {
+                var j = 1;
+                var array = [];
+                $.each(data,
+                    function (i, v) {
+                        array.push('<div class="card">');
+                        array.push('<div class="card-header">');
+                        array.push('<a class="card-link" data-toggle="collapse" href="#collapse'+j+'">'+moment(v.heureDebut).format("DD-MM-YYYY")+' : '+v.typeDeCours+' - '+v.discipline+'</a>');
+                        array.push('</div>');
+                        array.push('<div id="collapse'+j+'" class="collapse show">');
+                        array.push('<div class="card-body">');
+                        array.push('test'+j);
+                        array.push('</div>');
+                        array.push('</div>');
+                        array.push('</div>');
+                        j = j + 1;
+                    });
+                $('#accordion').append(array.join(''));
+                $('.collapse').collapse();
+            },
+            error: function(error) {
+                alert('failed : ' + error);
+            }
+        });
+    }
+</script>
+

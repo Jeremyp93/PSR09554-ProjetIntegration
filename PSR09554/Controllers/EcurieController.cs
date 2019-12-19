@@ -147,7 +147,7 @@ namespace PSR09554.Controllers
         public ActionResult UploadFiles(string id)
         {
             // Checking no of files injected in Request object  
-            if (Request.Files.Count > 0)
+            if (Request.Files.Count > 0 && Request.Files[0].FileName.EndsWith(".jpg"))
             {
                 try
                 {
@@ -190,6 +190,26 @@ namespace PSR09554.Controllers
             {
                 return Json("No files selected.");
             }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult> GetReservationUser()
+        {
+            if (Session["TokenNumber"] != null)
+            {
+                await ValidateToken(Session["TokenNumber"].ToString());
+                if (Session["ValidToken"].ToString() == "202")
+                {
+                    ViewBag.Token = Session["TokenNumber"].ToString();
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            return RedirectToAction("Login", "Account");
         }
     }
 }

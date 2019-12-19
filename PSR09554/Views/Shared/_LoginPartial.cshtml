@@ -9,6 +9,10 @@
             <button type="button" class="btn navbar-btn dropdown-toggle" data-toggle="dropdown"><i class="far fa-user-circle fa-lg rounded-circle align-self-center mr-2" style="width: 32px;"></i></button>
             <ul class="dropdown-menu" role="menu">
                 <li><h5 align="center"><b>@User.Identity.Name</b></h5></li>
+                @if (User.IsInRole("Client"))
+                {
+                    <li>@Html.ActionLink("Historique de réservation", "GetReservationUser", "Ecurie", new { area = "" }, new { @class = "dropdown-item" })</li>
+                }
                 @if (User.IsInRole("Admin"))
                 {
                     <li>@Html.ActionLink("Ajouter des cours", "AjouterCours", "Ecurie", new { area = "" }, new { @class = "dropdown-item" })</li>

@@ -196,25 +196,44 @@ namespace PSR09554.API.Controllers
             {
                 try
                 {
-                    var idProfesseur = BL.addProfesseur(professeur.prenom, professeur.nom);
-
-                    foreach (var discipline in professeur.discipline)
+                    if (ModelState.IsValid)
                     {
-                        foreach (var niveau in professeur.niveau)
+                        var idProfesseur = BL.addProfesseur(professeur.prenom, professeur.nom);
+
+                        foreach (var discipline in professeur.discipline)
                         {
-                            BL.addProfesseurCours(idProfesseur, professeur.typeCours, discipline, niveau);
+                            foreach (var niveau in professeur.niveau)
+                            {
+                                BL.addProfesseurCours(idProfesseur, professeur.typeCours, discipline, niveau);
+                            }
                         }
+                        txscope.Complete();
+                        message = "Le professeur " + professeur.prenom + " " + professeur.nom + " a été ajouté !";
+                        return Content(HttpStatusCode.Created, idProfesseur);
                     }
-                    txscope.Complete();
-                    message = "Le professeur " + professeur.prenom + " " + professeur.nom + " a été ajouté !";
-                    return Content(HttpStatusCode.Created, idProfesseur);
+                    else
+                    {
+                        return BadRequest("Veuillez remplir tous les champs !");
+                    }
                 }
                 catch
                 {
                     txscope.Dispose();
-                    return BadRequest();
+                    return BadRequest("L'ajout n'a pas reussi !");
                 }
             }
+        }
+
+        [System.Web.Http.Authorize]
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("v1/ecurie/MesReservations")]
+        public IHttpActionResult GetReservationUser()
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            string id = identity.Claims
+                .FirstOrDefault(c => c.Type == "id").Value;
+            var reservation = BL.getReservationUser(id);
+            return Json(reservation);
         }
     }
 }
