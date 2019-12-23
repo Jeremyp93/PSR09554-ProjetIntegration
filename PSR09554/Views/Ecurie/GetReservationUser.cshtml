@@ -49,14 +49,19 @@
                         array.push('</div>');
                         array.push('<div id="collapse'+j+'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading'+j+'">');
                         array.push('<div class="panel-body">');
-                        array.push('test' + j);
+                        array.push('<p>Heure de début : ' + moment(v.heureDebut).format("HH:mm") + '</p>');
+                        array.push('<p>Heure de fin : ' + moment(v.heureFin).format("HH:mm") + '</p>');
+                        array.push('<p>Type de cours : ' + v.typeDeCours + '</p>');
+                        array.push('<p>Discipline : ' + v.discipline + '</p>');
+                        array.push('<p>Niveau : ' + v.niveau + '</p>');
+                        array.push('<p>Professeur : '+v.professeur_prenom+' '+v.professeur_nom+'</p>');
                         array.push('</div>');
                         array.push('</div>');
                         array.push('</div>');
                         j = j + 1;
                     });
                 $('#accordion').append(array.join(''));
-                $('.collapse').collapse();
+                $('.collapsed').collapse();
             },
             error: function(error) {
                 alert('failed : ' + error);

@@ -79,6 +79,15 @@ namespace PSR09554.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [Display(Name = "Prenom")]
+        public string Prenom { get; set; }
+
+        [Required]
+        [Display(Name = "Nom")]
+        public string Nom { get; set; }
+
     }
 
     public class ResetPasswordViewModel

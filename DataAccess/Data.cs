@@ -151,7 +151,7 @@ namespace DataAccess
         {
             using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
             {
-                var lstToReturn = db.GetReservationUser(id).ToList();
+                var lstToReturn = db.GetReservationUser(id).OrderByDescending(x => x.COURS_debut).ToList();
                 return lstToReturn;
             }
         }
