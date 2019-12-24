@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.779
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSR09554.Web", "PSR09554\PSR09554.Web.csproj", "{15B0B040-C804-4669-8A7E-3F3C1209794E}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLayer", "BusinessLayer\BusinessLayer.csproj", "{DB9B8AAA-336D-4549-88FB-11D7B960A0AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "Helpers\Helpers.csproj", "{FFB8A062-26E6-48D7-B2D3-DA038E9549AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSR09554.Webb", "PSR09554.Webb\PSR09554.Webb.csproj", "{1D7ED424-238B-4972-9B82-7E433E3987E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{FFB8A062-26E6-48D7-B2D3-DA038E9549AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFB8A062-26E6-48D7-B2D3-DA038E9549AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFB8A062-26E6-48D7-B2D3-DA038E9549AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D7ED424-238B-4972-9B82-7E433E3987E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D7ED424-238B-4972-9B82-7E433E3987E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D7ED424-238B-4972-9B82-7E433E3987E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D7ED424-238B-4972-9B82-7E433E3987E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

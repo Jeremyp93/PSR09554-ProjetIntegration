@@ -1,0 +1,319 @@
+﻿@using Helpers
+
+@{
+    ViewBag.Title = "AjouterCours";
+}
+
+<h2>AjouterCours</h2>
+
+
+<link rel="stylesheet" href="~/Content/jquery.steps.css" />
+<link rel="stylesheet" href="~/Content/main.css" />
+<link rel="stylesheet" href="~/Content/normalize.css" />
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" type="text/css" href="~/Content/clockpicker.css" />
+<script type="text/javascript" src="~/Scripts/clockpicker.js"></script>
+<script src="~/Scripts/jquery.steps.js"></script>
+<script src="~/Scripts/jquery.steps.min.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/bootstrap-select.css" />
+<link rel="stylesheet" href="~/Content/bootstrap-select.min.css" />
+<script type="text/javascript" src="~/Scripts/bootstrap-select.js"></script>
+
+<form id="CoursForm" class="form-horizontal">
+    <div>
+        <h3>Cours</h3>
+        <section>
+            <h4>Quel cours souhaitez-vous planifier?</h4>
+            <div class="form-group">
+                <div class="col-sm-3 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-user-alt"></i></span>
+                        <select id="typeCours" name="typeCours" class="selectpicker required form-control" title="Veuillez choisir un cours...">
+                            <option value="Collectif">Collectif</option>
+                            <option value="Individuel">Individuel</option>
+                            <option value="Randonnee">Randonnée</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group discipline">
+                <div class="col-sm-3 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-map-signs"></i></span>
+                        <select id="typeDiscipline" name="typeDiscipline" class="selectpicker required form-control" title="Veuillez choisir la discipline...">
+                            <option value="Dressage">Dressage</option>
+                            <option value="Obstacle">Obstacle</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-award"></i></span>
+                        <select id="niveau" name="niveau" class="selectpicker required form-control" title="Votre niveau...">
+                            <option value="Debutant" class="discipline">Débutant</option>
+                            <option value="Moyen">Intermdiaire</option>
+                            <option value="Confirme">Confirmé</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-user-graduate"></i></span>
+                        <select id="professeur" name="professeur" class="selectpicker required form-control" title="Le professeur...">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <p>* Chaque case doit être remplie</p>
+        </section>
+        <h3>Planification</h3>
+        <section>
+            <h4>Quand est-ce que le cours doit être planifié ?</h4>
+            <div class="form-group">
+                <div class="col-sm-3 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="far fa-calendar-alt"></i></span>
+                        <input id="datefilter" type="text" name="datefilter" value="" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="far fa-clock"></i></span>
+                        <input class="form-control" id="single-input" value="" placeholder="Now">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="far fa-calendar"></i></span>
+                        <select class="selectpicker form-control" id="jourCours" multiple data-actions-box="true" title="Choisissez un jour...">
+                            <option value="Monday">Lundi</option>
+                            <option value="Tuesday">Mardi</option>
+                            <option value="Wednesday">Mercredi</option>
+                            <option value="Thursday">Jeudi</option>
+                            <option value="Friday">Vendredi</option>
+                            <option value="Saturday">Samedi</option>
+                            <option value="Sunday">Dimanche</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</form>
+
+<hr />
+
+@{
+    var path = CUtil.GetValueBaseOnKey("apiBaseUrl");
+    var sitePath = CUtil.GetValueBaseOnKey("siteBaseUrl");
+    var ecuriePath = path + CUtil.GetValueBaseOnKey("GameUrl");
+}
+
+<script>
+    jQuery.extend(jQuery.validator.messages, {
+        required: "Ce champ est obligatoire !",
+        remote: "Please fix this field.",
+        email: "Please enter a valid email address.",
+        url: "Please enter a valid URL.",
+        date: "Please enter a valid date.",
+        dateISO: "Please enter a valid date (ISO).",
+        number: "Please enter a valid number.",
+        digits: "Please enter only digits.",
+        creditcard: "Please enter a valid credit card number.",
+        equalTo: "Please enter the same value again.",
+        accept: "Please enter a value with a valid extension.",
+        maxlength: jQuery.validator.format("Please enter no more than {0} characters."),
+        minlength: jQuery.validator.format("Please enter at least {0} characters."),
+        rangelength: jQuery.validator.format("Please enter a value between {0} and {1} characters long."),
+        range: jQuery.validator.format("Please enter a value between {0} and {1}."),
+        max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
+        min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
+    });
+</script>
+
+<script>
+    var token = '@ViewBag.Token';
+    var headers = {};
+    if (token) {
+        headers.Authorization = 'Bearer ' + token;
+    }
+    var startDate;
+    var endDate;
+    var day;
+
+    $(document).ready(function () {
+        $('#typeCours').change(function () {
+            if ($('#typeCours').val() == "Randonnee") {
+                $('.discipline').hide();
+            } else {
+                $('.discipline').show();
+            }
+            RechercheProfesseur();
+        });
+        $('#niveau').change(function () {
+            RechercheProfesseur();
+        });
+        $('#datefilter').change(function () {
+            if (startDate == endDate) {
+                $('#datefilter').val();
+            }
+        });
+
+    });
+
+    $(function () {
+        var date = new Date();
+        //date.setDate(date.getDate() + 1);
+        $('input[name="datefilter"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            },
+            minDate: date
+    });
+
+        $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+            startDate = picker.startDate.format('YYYY-MM-DD');
+            endDate = picker.endDate.format('YYYY-MM-DD');
+            if (startDate == endDate) {
+                day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][(new Date(
+                    picker.startDate).getDay())];
+                $("#jourCours").val(day);
+                $("#jourCours").change();
+            } else {
+                $("#jourCours").val("");
+                $("#jourCours").change();
+            }
+        });
+
+        $('input[name="datefilter"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        $('#single-input').clockpicker({
+            placement: 'bottom',
+            align: 'left',
+            autoclose: true,
+            'default': 'now'
+        });
+    });
+
+    var form = $("#CoursForm");
+    form.validate({
+        errorPlacement: function errorPlacement(error, element) { element.before(error); },
+        rules: {
+            confirm: {
+                equalTo: "#password"
+            }
+        }
+    });
+
+    form.children("div").steps({
+        headerTag: "h3",
+        bodyTag: "section",
+        transitionEffect: "slideLeft",
+        labels:
+        {
+            current: "Etape actuelle",
+            pagnation: "Pagination",
+            finish: "Confirmer",
+            next: "Suivant",
+            previous: "Précedent",
+            loading: "Chargement ..."
+        },
+        onStepChanging: function (event, currentIndex, newIndex) {
+            if (currentIndex > newIndex)
+            {
+                return true;
+            }
+            form.validate().settings.ignore = ":disabled, :hidden";
+            return form.valid();
+        },
+        onFinishing: function (event, currentIndex) {
+            form.validate().settings.ignore = ":disabled";
+            return form.valid();
+        },
+        onFinished: function (event, currentIndex) {
+            ajouterCours();
+        }
+    });
+
+    function RechercheProfesseur() {
+        var myjson = {
+            typeCours: $('#typeCours').val(),
+            niveau: $('#niveau').val(),
+        };
+        $('#professeur')
+                .find('option')
+                .remove()
+                .end()
+            ;
+        $.ajax({
+            url: '@ecuriePath' + 'RechercheProfesseur',
+            type: 'POST',
+            headers: headers,
+            data: JSON.stringify(myjson),
+            dataType: 'json',
+            async: false,
+            contentType: 'application/json',
+            success: function (data) {
+                $('#alert').text("");
+                $.each(data, function (index, value) {
+                    $('#professeur').append($('<option>').text(value.prenom+" "+value.nom).val(value.id));
+                });
+                $('#professeur').selectpicker('refresh');
+            },
+            error: function(data) {
+                alert('failed');
+            }
+        });
+    }
+
+    function ajouterCours() {
+        var myjson = {
+            dateDebut: startDate,
+            heureDebut: $('#single-input').val(),
+            dateFin: endDate,
+            typeCours: $('#typeCours').val(),
+            discipline: $('#typeDiscipline').val(),
+            niveau: $('#niveau').val(),
+            idProfesseur: $('#professeur').val(),
+            jourSemaine: $('#jourCours').val()
+        };
+        $.ajax({
+            url: '@ecuriePath' + 'AjouterCours',
+            type: 'POST',
+            headers: headers,
+            data: JSON.stringify(myjson),
+            dataType: 'json',
+            async: false,
+            contentType: 'application/json',
+            success: function (data) {
+                alert(data);
+                window.location.replace('@sitePath'+"/Ecurie/Horaires");
+            },
+            error: function(data) {
+                alert('failed');
+            }
+        });
+    };
+</script>
+

@@ -1,0 +1,251 @@
+﻿@using Helpers
+
+@{
+    ViewBag.Title = "Horaires";
+}
+
+<style>
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+</style>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<p></p>
+<div class="row">
+    <div class="col-md-4">
+        <table>
+            <tr>
+                <th>Legende</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>Niveau débutant</td>
+                <td width="40px" style="background-color: green"></td>
+            </tr>
+            <tr>
+                <td>Niveau moyen</td>
+                <td width="40px" style="background-color: orange"></td>
+            </tr>
+            <tr>
+                <td>Niveau confirmé</td>
+                <td width="40px" style="background-color: red"></td>
+            </tr>
+            <tr>
+                <td>Complet</td>
+                <td width="40px" style="background-color: gray"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-4">
+        <p align="right">@Html.ActionLink("Réserver un cours", "Reservation", null, new { @class = "btn btn-primary" })</p>
+    </div>
+</div>
+
+<p></p>
+<div id="calendar">
+
+</div>
+
+<div>
+    <p>Veuillez appuyer sur un cours pour avoir plus d'informations concernant ce dernier.</p>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><span id="eventTitle"></span></h4>
+            </div>
+            <div class="modal-body">
+                <p id="pDetails"></p>
+            </div>
+            <div class="modal-footer">
+                @if (this.User.IsInRole("Admin"))
+                {
+                    <button id="deleteButton" type="button" class="btn btn-danger">Supprimer</button>
+                }
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@{
+    var path = CUtil.GetValueBaseOnKey("apiBaseUrl");
+    var gamePath = path + CUtil.GetValueBaseOnKey("GameUrl");
+}
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css" rel="stylesheet" />
+<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.print.css" rel="stylesheet" media="print" />
+
+@section scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
+
+    <script>
+        var idCours;
+
+        var token = '@ViewBag.Token'
+        var headers = {};
+        if (token) {
+            headers.Authorization = 'Bearer ' + token;
+        }
+
+        var error;
+
+        $(document).ready(function() {
+            LoadCalendar();
+        });
+
+        function LoadCalendar() {
+            var events = [];
+
+            $.ajax({
+                url: '@gamePath' + 'Cours',
+                type: 'GET',
+                success: function(data) {
+                    $.each(data,
+                        function(i, v) {
+                            if (v.nombreMax != 0) {
+                                events.push({
+                                    title: v.titre,
+                                    description: v.description + ";" + v.professeur + ";" + v.nombreMax + ";" + v.id,
+                                    start: moment(v.coursDebut),
+                                    end: moment(v.coursFin),
+                                    color: v.couleur,
+                                    allDay: false,
+                                });
+                            } else {
+                                events.push({
+                                    title: v.titre,
+                                    description: v.description + ";" + v.professeur + ";" + v.nombreMax + ";" + v.id,
+                                    start: moment(v.coursDebut),
+                                    end: moment(v.coursFin),
+                                    color: 'gray',
+                                    allDay: false,
+                                });
+                            }
+
+                        });
+
+                    GenerateCalendar(events);
+                },
+                error: function(error) {
+                    alert('failed : ' + error);
+                }
+            });
+
+            function GenerateCalendar(events) {
+                $('#calendar').fullCalendar('destroy');
+                $('#calendar').fullCalendar({
+                    contentHeight: 400,
+                    defaultDate: new Date(),
+                    timeFormat: 'H:mm',
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        //right: 'month,basicWeek,basicDay,agenda'
+                    },
+                    defaultView: 'agendaWeek',
+                    firstDay: 1,
+                    viewRender: renderViewColumns,
+                    slotLabelFormat: 'H:mm',
+                    //titleFormat: 'DD MMM YYYY',
+                    titleFormat: '[Horaires des cours]',
+                    allDaySlot: false,
+                    minTime: '10:00:00',
+                    maxTime: '19:00:00',
+                    contentHeight: 420,
+                    eventLimit: true,
+                    eventColor: '#378006',
+                    events: events,
+                    eventClick: function(calEvent, jsEvent, view) {
+                        $('#myModal #eventTitle').text(calEvent.title);
+                        var niveau = calEvent.description.split(";")[0];
+                        var professeur = calEvent.description.split(";")[1];
+                        var place = calEvent.description.split(";")[2];
+                        idCours = calEvent.description.split(";")[3];
+                        var $description = $('<div/>');
+                        $description.append($('<p/>')
+                            .html('<b>Début du cours: </b>' + calEvent.start.format("DD-MM-YYYY HH:mm")));
+                        $description.append($('<p/>')
+                            .html('<b>Fin du cours: </b>' + calEvent.end.format("DD-MM-YYYY HH:mm")));
+                        $description.append($('<p/>').html('<b>Niveau: </b>' + niveau));
+                        $description.append($('<p/>').html('<b>Professeur: </b>' + professeur));
+                        if (place != 0)
+                            $description.append($('<p/>').html('<b>Places disponnibles: </b>' + place));
+                        else
+                            $description.append($('<p/>').html('<b>Places disponnibles: COMPLET</b>'));
+                        $('#myModal #pDetails').empty().html($description);
+                        $('#deleteButton').show();
+                        $('#myModal').modal();
+                        $('#deleteButton').click(function() {
+                            DeleteCours(function () {
+                                if (!error) {
+                                    $('#calendar').fullCalendar('removeEvents', calEvent._id);
+                                } else {
+                                    calEvent._id = "";
+                                }
+                            });
+                        });
+                    },
+                    eventAfterRender: function(event, element) {
+                        $(element).tooltip({
+                            title: event.title +
+                                " - " +
+                                event.description.split(";")[1] +
+                                " - " +
+                                event.description.split(";")[2],
+                            container: "body"
+                        });
+                    }
+                });
+
+                function renderViewColumns(view, element) {
+                    element.find('th.fc-day-header.fc-widget-header').each(function() {
+                        var date = moment($(this).data('date'));
+                        $(this).html('<span>' +
+                            date.format('ddd ') +
+                            '</span><span>' +
+                            date.format('D MMM YYYY') +
+                            '</span>');
+                    });
+                };
+            }
+        }
+
+        function DeleteCours(_callback) {
+            $.ajax({
+                url: '@gamePath' + 'DeleteCours?id=' + idCours,
+                headers: headers,
+                type: 'DELETE',
+                async: false,
+                contentType: 'application/json',
+                success: function(data) {
+                    $('#myModal').modal('hide');
+                    error = false;
+                    _callback();
+                },
+                error: function(data) {
+                    $('#myModal #eventTitle').text("Une erreur est survenue");
+                    $('#myModal #pDetails').empty().text("Quelqu'un a déjà effectuer une réservation pour ce cours !");
+                    $('#deleteButton').hide();
+                    $('#myModal').modal();
+                    error = true;
+                    _callback();
+                }
+            });
+        }
+    </script>
+}
+
