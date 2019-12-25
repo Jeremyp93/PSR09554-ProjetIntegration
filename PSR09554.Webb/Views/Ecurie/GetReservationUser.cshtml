@@ -4,9 +4,6 @@
     ViewBag.Title = "GetReservationUser";
 }
 
-
-<link rel="stylesheet" href="~/Content/bootstrap.min.css">
-<script src="~/Scripts/bootstrap.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 
 <h2>GetReservationUser!</h2>
@@ -42,9 +39,19 @@
                 $.each(data,
                     function (i, v) {
                         array.push('<div class="panel panel-default">');
-                        array.push('<div class="panel-heading" role="tab" id="heading' + j + '">');
+                        if (new Date(v.heureDebut) <= new Date()) {
+                            array.push(
+                                '<div class="panel-heading" style="background-color: rgba(255,0,0, 0.3)" role="tab" id="heading' +
+                                j +
+                                '">');
+                        } else {
+                            array.push(
+                                '<div class="panel-heading" role="tab" id="heading' +
+                                j +
+                                '">');
+                        }
                         array.push('<h4 class="panel-title">');
-                        array.push('<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse' + j + '" aria-expanded="false" aria-controls="collapseTwo">' + moment(v.heureDebut).format("DD-MM-YYYY") + ' : ' + v.typeDeCours + ' - ' + v.discipline + '</a>');
+                        array.push('<a class="collapsed" role="button" data-toggle="collapse" href="#collapse' + j + '" aria-expanded="false" aria-controls="collapseTwo">' + moment(v.heureDebut).format("DD-MM-YYYY") + ' : ' + v.typeDeCours + ' - ' + v.discipline + '</a>');
                         array.push('</h4>');
                         array.push('</div>');
                         array.push('<div id="collapse'+j+'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading'+j+'">');

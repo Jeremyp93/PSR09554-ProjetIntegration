@@ -18,10 +18,7 @@
                     <li>@Html.ActionLink("Ajouter des cours", "AjouterCours", "Ecurie", new { area = "" }, new { @class = "dropdown-item" })</li>
                     <li>@Html.ActionLink("Ajouter des professeurs", "AjouterProfesseur", "Ecurie", new { area = "" }, new { @class = "dropdown-item" })</li>
                 }
-                <li><a href="#">View Profile</a></li>
-                <li><a href="#">Edit Profile</a></li>
-                <li><a href="#">Change Password</a></li>
-                <li><a href="#">Setting</a></li>
+                <li><a href="@Url.Action("ChangePassword","Manage")">Modifier votre mot de passe</a></li>
                 <li><a href="javascript:document.getElementById('logoutForm').submit()">Déconnecter</a></li>
             </ul>
         </li>
