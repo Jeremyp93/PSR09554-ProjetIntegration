@@ -6,7 +6,7 @@
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 
-<h2>GetReservationUser!</h2>
+<h2>Récapitulatif de vos réservation !</h2><br />
 
 <div class="container">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"></div>
@@ -26,6 +26,7 @@
 
     $(document).ready(function() {
         LoadReservation();
+        
     });
 
     function LoadReservation() {
@@ -44,15 +45,20 @@
                                 '<div class="panel-heading" style="background-color: rgba(255,0,0, 0.3)" role="tab" id="heading' +
                                 j +
                                 '">');
+                            array.push('<h4 class="panel-title">');
+                            array.push('<a class="collapsed" role="button" data-toggle="collapse" href="#collapse' + j + '" aria-expanded="false" aria-controls="collapseTwo">' + moment(v.heureDebut).format("DD-MM-YYYY") + ' : ' + v.typeDeCours + ' - ' + v.discipline + '</a>');
+                            array.push('</h4>');
                         } else {
                             array.push(
                                 '<div class="panel-heading" role="tab" id="heading' +
                                 j +
                                 '">');
+                            array.push('<h4 class="panel-title">');
+                            array.push('<a class="collapsed" role="button" data-toggle="collapse" href="#collapse' + j + '" aria-expanded="false" aria-controls="collapseTwo">' + moment(v.heureDebut).format("DD-MM-YYYY") + ' : ' + v.typeDeCours + ' - ' + v.discipline + '</a>');
+                            array.push('</h4>');
+                            array.push('<div style="display:flex; justify-content:flex-end; width:100%; padding:0;"><input type="button" id="'+v.idReservation+'" class="btn btn-danger" onclick="DeleteReservation();" value="Annuler réservation" /></div>');
+
                         }
-                        array.push('<h4 class="panel-title">');
-                        array.push('<a class="collapsed" role="button" data-toggle="collapse" href="#collapse' + j + '" aria-expanded="false" aria-controls="collapseTwo">' + moment(v.heureDebut).format("DD-MM-YYYY") + ' : ' + v.typeDeCours + ' - ' + v.discipline + '</a>');
-                        array.push('</h4>');
                         array.push('</div>');
                         array.push('<div id="collapse'+j+'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading'+j+'">');
                         array.push('<div class="panel-body">');
@@ -73,6 +79,28 @@
             error: function(error) {
                 alert('failed : ' + error);
             }
+        });
+    }
+
+    function DeleteReservation() {
+        var idRes;
+        $(document).on("click","input[type='button']", function(e){             
+            idRes = $(this).attr("id");
+            $.ajax({
+                url: '@ecuriePath' + 'DeleteReservation?id=' + idRes,
+                headers: headers,
+                type: 'DELETE',
+                async: false,
+                contentType: 'application/json',
+                success: function (data) {
+                    $('#'+idRes).parents('.panel').get(0).remove();
+                    //$("#accordion").empty();
+                    //LoadReservation();
+                },
+                error: function (data) {
+                    alert(data);
+                }
+            });
         });
     }
 </script>

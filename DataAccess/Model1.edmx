@@ -36,6 +36,8 @@
           <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
           <Property Name="AccessFailedCount" Type="int" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="Prenom" Type="nvarchar(max)" />
+          <Property Name="Nom" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Cheval">
           <Key>
@@ -294,6 +296,9 @@
         <Function Name="DeleteCours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="idCours" Type="uniqueidentifier" Mode="In" />
         </Function>
+        <Function Name="DeleteReservation" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idRes" Type="uniqueidentifier" Mode="In" />
+        </Function>
         <Function Name="GetAllCours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetChevauxFiltre" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="typecours" Type="varchar" Mode="In" />
@@ -420,6 +425,8 @@
           <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
           <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
+          <Property Name="Prenom" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Nom" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Cheval">
           <Key>
@@ -765,7 +772,10 @@
           <Parameter Name="idCours" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="GetReservationUser" ReturnType="Collection(ExamenProjetIntegrationModel.GetReservationUser_Result)">
-            <Parameter Name="idUser" Mode="In" Type="String" />
+          <Parameter Name="idUser" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="DeleteReservation">
+            <Parameter Name="idRes" Mode="In" Type="Guid" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GetAllCours_Result">
@@ -853,6 +863,8 @@
           <EntitySetMapping Name="AspNetUsers">
             <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.AspNetUser">
               <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="Nom" ColumnName="Nom" />
+                <ScalarProperty Name="Prenom" ColumnName="Prenom" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
@@ -1064,6 +1076,7 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="DeleteReservation" FunctionName="ExamenProjetIntegrationModel.Store.DeleteReservation" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

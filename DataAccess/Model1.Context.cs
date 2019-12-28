@@ -236,5 +236,14 @@ namespace DataAccess
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetReservationUser_Result>("GetReservationUser", idUserParameter);
         }
+    
+        public virtual int DeleteReservation(Nullable<System.Guid> idRes)
+        {
+            var idResParameter = idRes.HasValue ?
+                new ObjectParameter("idRes", idRes) :
+                new ObjectParameter("idRes", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteReservation", idResParameter);
+        }
     }
 }

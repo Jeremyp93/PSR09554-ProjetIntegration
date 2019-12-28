@@ -155,5 +155,13 @@ namespace DataAccess
                 return lstToReturn;
             }
         }
+
+        public static void DeleteReservation(Guid idReservation)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                db.DeleteReservation(idReservation);
+            }
+        }
     }
 }

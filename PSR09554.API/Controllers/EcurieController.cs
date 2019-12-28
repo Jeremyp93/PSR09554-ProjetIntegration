@@ -235,5 +235,26 @@ namespace PSR09554.API.Controllers
             var reservation = BL.getReservationUser(id);
             return Json(reservation);
         }
+
+        [System.Web.Http.Authorize]
+        [System.Web.Http.HttpDelete]
+        [System.Web.Http.Route("v1/ecurie/DeleteReservation")]
+        public IHttpActionResult DeleteReservation([FromUri] string id)
+        {
+            try
+            {
+                Guid idRes;
+                if (Guid.TryParse(id, out idRes))
+                {
+                    BL.deleteReservation(idRes);
+                    return Content(HttpStatusCode.OK, "Deleted");
+                }
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.BadRequest, e.Message);
+            }
+        }
     }
 }

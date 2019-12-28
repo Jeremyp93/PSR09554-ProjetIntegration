@@ -525,5 +525,28 @@ namespace BusinessLayer
                 throw e;
             }
         }
+
+        public static void deleteReservation(Guid idReservation)
+        {
+            try
+            {
+                Data.DeleteReservation(idReservation);
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
     }
 }
