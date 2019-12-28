@@ -13,6 +13,10 @@
                 {
                     <li>@Html.ActionLink("Historique de réservation", "GetReservationUser", "Ecurie", new { area = "" }, new { @class = "dropdown-item" })</li>
                 }
+                @if (User.IsInRole("Professeur"))
+                {
+                    <li>@Html.ActionLink("Mon agenda", "HorairesProfesseurs", "Ecurie", new { area = "" }, new { @class = "dropdown-item" })</li>
+                }
                 @if (User.IsInRole("Admin"))
                 {
                     <li>@Html.ActionLink("Ajouter des cours", "AjouterCours", "Ecurie", new { area = "" }, new { @class = "dropdown-item" })</li>

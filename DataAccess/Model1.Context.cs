@@ -127,6 +127,15 @@ namespace DataAccess
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteCours", idCoursParameter);
         }
     
+        public virtual int DeleteReservation(Nullable<System.Guid> idRes)
+        {
+            var idResParameter = idRes.HasValue ?
+                new ObjectParameter("idRes", idRes) :
+                new ObjectParameter("idRes", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteReservation", idResParameter);
+        }
+    
         public virtual ObjectResult<GetAllCours_Result> GetAllCours()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetAllCours_Result>("GetAllCours");
@@ -210,6 +219,15 @@ namespace DataAccess
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetProfesseurTable_Result>("GetProfesseurTable");
         }
     
+        public virtual ObjectResult<GetReservationUser_Result> GetReservationUser(string idUser)
+        {
+            var idUserParameter = idUser != null ?
+                new ObjectParameter("idUser", idUser) :
+                new ObjectParameter("idUser", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetReservationUser_Result>("GetReservationUser", idUserParameter);
+        }
+    
         public virtual ObjectResult<GetUser_Result> GetUser(string name)
         {
             var nameParameter = name != null ?
@@ -226,24 +244,6 @@ namespace DataAccess
                 new ObjectParameter("idCours", typeof(System.Guid));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UpdateCoursParticipant", idCoursParameter);
-        }
-    
-        public virtual ObjectResult<GetReservationUser_Result> GetReservationUser(string idUser)
-        {
-            var idUserParameter = idUser != null ?
-                new ObjectParameter("idUser", idUser) :
-                new ObjectParameter("idUser", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetReservationUser_Result>("GetReservationUser", idUserParameter);
-        }
-    
-        public virtual int DeleteReservation(Nullable<System.Guid> idRes)
-        {
-            var idResParameter = idRes.HasValue ?
-                new ObjectParameter("idRes", idRes) :
-                new ObjectParameter("idRes", typeof(System.Guid));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteReservation", idResParameter);
         }
     }
 }

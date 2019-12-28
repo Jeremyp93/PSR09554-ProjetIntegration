@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ExamenProjetIntegrationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="ExamenProjetIntegrationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AspNetRoles">
           <Key>
             <PropertyRef Name="Id" />
@@ -396,7 +396,8 @@
             <End Role="Reservation" EntitySet="Reservation" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ExamenProjetIntegrationModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -424,9 +425,9 @@
           <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
           <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
           <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
           <Property Name="Prenom" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Nom" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
         </EntityType>
         <EntityType Name="Cheval">
           <Key>
@@ -740,7 +741,10 @@
             <Parameter Name="niveau" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DeleteCours">
-          <Parameter Name="idCours" Mode="In" Type="Guid" />
+            <Parameter Name="idCours" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="DeleteReservation">
+            <Parameter Name="idRes" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="GetAllCours" ReturnType="Collection(ExamenProjetIntegrationModel.GetAllCours_Result)" />
           <FunctionImport Name="GetChevauxFiltre" ReturnType="Collection(ExamenProjetIntegrationModel.GetChevauxFiltre_Result)">
@@ -758,24 +762,21 @@
             <Parameter Name="user" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="GetFiltreDetail" ReturnType="Collection(ExamenProjetIntegrationModel.GetFiltreDetail_Result)">
-          <Parameter Name="id" Mode="In" Type="Guid" />
+            <Parameter Name="id" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="GetProfesseur" ReturnType="Collection(ExamenProjetIntegrationModel.GetProfesseur_Result)">
             <Parameter Name="typecours" Mode="In" Type="String" />
             <Parameter Name="niveau" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="GetProfesseurTable" ReturnType="Collection(ExamenProjetIntegrationModel.GetProfesseurTable_Result)" />
+          <FunctionImport Name="GetReservationUser" ReturnType="Collection(ExamenProjetIntegrationModel.GetReservationUser_Result)">
+            <Parameter Name="idUser" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="GetUser" ReturnType="Collection(ExamenProjetIntegrationModel.GetUser_Result)">
-          <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="name" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="UpdateCoursParticipant">
-          <Parameter Name="idCours" Mode="In" Type="Guid" />
-          </FunctionImport>
-          <FunctionImport Name="GetReservationUser" ReturnType="Collection(ExamenProjetIntegrationModel.GetReservationUser_Result)">
-          <Parameter Name="idUser" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="DeleteReservation">
-            <Parameter Name="idRes" Mode="In" Type="Guid" />
+            <Parameter Name="idCours" Mode="In" Type="Guid" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GetAllCours_Result">
@@ -829,12 +830,6 @@
           <Property Type="String" Name="TYPECOURS_discipline" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="NIVEAU_libelle" Nullable="false" MaxLength="50" />
         </ComplexType>
-        <ComplexType Name="GetUser_Result">
-          <Property Type="String" Name="Id" Nullable="false" MaxLength="128" />
-          <Property Type="String" Name="UserName" Nullable="false" MaxLength="256" />
-          <Property Type="String" Name="PasswordHash" Nullable="true" />
-          <Property Type="String" Name="Name" Nullable="false" MaxLength="256" />
-        </ComplexType>
         <ComplexType Name="GetReservationUser_Result">
           <Property Type="Guid" Name="RESERVATION_id" Nullable="false" />
           <Property Type="DateTime" Name="COURS_debut" Nullable="false" Precision="23" />
@@ -845,6 +840,14 @@
           <Property Type="String" Name="PROFESSEUR_prenom" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="TYPECOURS_libelle" Nullable="false" MaxLength="55" />
           <Property Type="String" Name="TYPECOURS_discipline" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="GetUser_Result">
+          <Property Type="String" Name="Id" Nullable="false" MaxLength="128" />
+          <Property Type="String" Name="UserName" Nullable="false" MaxLength="256" />
+          <Property Type="String" Name="PasswordHash" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="256" />
+          <Property Type="String" Name="Prenom" Nullable="true" />
+          <Property Type="String" Name="Nom" Nullable="true" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -863,8 +866,6 @@
           <EntitySetMapping Name="AspNetUsers">
             <EntityTypeMapping TypeName="ExamenProjetIntegrationModel.AspNetUser">
               <MappingFragment StoreEntitySet="AspNetUsers">
-                <ScalarProperty Name="Nom" ColumnName="Nom" />
-                <ScalarProperty Name="Prenom" ColumnName="Prenom" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
@@ -877,6 +878,8 @@
                 <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
                 <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Prenom" ColumnName="Prenom" />
+                <ScalarProperty Name="Nom" ColumnName="Nom" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -971,6 +974,7 @@
           <FunctionImportMapping FunctionImportName="AjouterProfesseur" FunctionName="ExamenProjetIntegrationModel.Store.AjouterProfesseur" />
           <FunctionImportMapping FunctionImportName="AjouterProfesseurCours" FunctionName="ExamenProjetIntegrationModel.Store.AjouterProfesseurCours" />
           <FunctionImportMapping FunctionImportName="DeleteCours" FunctionName="ExamenProjetIntegrationModel.Store.DeleteCours" />
+          <FunctionImportMapping FunctionImportName="DeleteReservation" FunctionName="ExamenProjetIntegrationModel.Store.DeleteReservation" />
           <FunctionImportMapping FunctionImportName="GetAllCours" FunctionName="ExamenProjetIntegrationModel.Store.GetAllCours">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetAllCours_Result">
@@ -1050,17 +1054,6 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GetUser" FunctionName="ExamenProjetIntegrationModel.Store.GetUser">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetUser_Result">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="UpdateCoursParticipant" FunctionName="ExamenProjetIntegrationModel.Store.UpdateCoursParticipant" />
           <FunctionImportMapping FunctionImportName="GetReservationUser" FunctionName="ExamenProjetIntegrationModel.Store.GetReservationUser">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetReservationUser_Result">
@@ -1076,7 +1069,19 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="DeleteReservation" FunctionName="ExamenProjetIntegrationModel.Store.DeleteReservation" />
+          <FunctionImportMapping FunctionImportName="GetUser" FunctionName="ExamenProjetIntegrationModel.Store.GetUser">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ExamenProjetIntegrationModel.GetUser_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Prenom" ColumnName="Prenom" />
+                <ScalarProperty Name="Nom" ColumnName="Nom" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="UpdateCoursParticipant" FunctionName="ExamenProjetIntegrationModel.Store.UpdateCoursParticipant" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

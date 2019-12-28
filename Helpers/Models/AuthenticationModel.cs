@@ -13,5 +13,9 @@ namespace Helpers.Models
 
         public string hash { get; set; }
         public string role { get; set; }
+
+        public string prenom { get; set; }
+
+        public string nom { get; set; }
     }
 }

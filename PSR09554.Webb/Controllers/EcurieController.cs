@@ -212,5 +212,25 @@ namespace PSR09554.Webb.Controllers
             }
             return RedirectToAction("Login", "Account");
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Professeur")]
+        public async Task<ActionResult> HorairesProfesseurs()
+        {
+            if (Session["TokenNumber"] != null)
+            {
+                await ValidateToken(Session["TokenNumber"].ToString());
+                if (Session["ValidToken"].ToString() == "202")
+                {
+                    ViewBag.Token = Session["TokenNumber"].ToString();
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            return RedirectToAction("Login", "Account");
+        }
     }
 }

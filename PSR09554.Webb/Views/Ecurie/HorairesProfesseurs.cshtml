@@ -1,8 +1,10 @@
 ﻿@using Helpers
 
 @{
-    ViewBag.Title = "Horaires";
+    ViewBag.Title = "HorairesProfesseurs";
 }
+
+<h2>HorairesProfesseurs</h2>
 
 <style>
     td, th {
@@ -11,9 +13,6 @@
         padding: 8px;
     }
 </style>
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <p></p>
 <div class="row">
@@ -25,19 +24,19 @@
             </tr>
             <tr>
                 <td>Niveau débutant</td>
-                <td style="background-color: green"></td>
+                <td width="40px" style="background-color: green"></td>
             </tr>
             <tr>
                 <td>Niveau moyen</td>
-                <td style="background-color: orange"></td>
+                <td width="40px" style="background-color: orange"></td>
             </tr>
             <tr>
                 <td>Niveau confirmé</td>
-                <td style="background-color: red"></td>
+                <td width="40px" style="background-color: red"></td>
             </tr>
             <tr>
                 <td>Complet</td>
-                <td style="background-color: gray"></td>
+                <td width="40px" style="background-color: gray"></td>
             </tr>
         </table>
     </div>
@@ -68,7 +67,7 @@
                 <p id="pDetails"></p>
             </div>
             <div class="modal-footer">
-                @if (this.User.IsInRole("Admin"))
+                @if (this.User.IsInRole("Professeur"))
                 {
                     <button id="deleteButton" type="button" class="btn btn-danger">Supprimer</button>
                 }
@@ -111,7 +110,8 @@
             var events = [];
 
             $.ajax({
-                url: '@gamePath' + 'Cours',
+                url: '@gamePath' + 'CoursProfesseurs',
+                headers: headers,
                 type: 'GET',
                 success: function(data) {
                     $.each(data,
@@ -201,9 +201,7 @@
                     },
                     eventAfterRender: function(event, element) {
                         $(element).tooltip({
-                            title: event.title +
-                                " - " +
-                                event.description.split(";")[1] +
+                            title: event.description.split(";")[1] +
                                 " - " +
                                 event.description.split(";")[2],
                             container: "body"
@@ -248,4 +246,6 @@
         }
     </script>
 }
+
+
 

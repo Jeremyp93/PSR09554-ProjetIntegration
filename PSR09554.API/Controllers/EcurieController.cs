@@ -256,5 +256,19 @@ namespace PSR09554.API.Controllers
                 return Content(HttpStatusCode.BadRequest, e.Message);
             }
         }
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Authorize(Roles = "Professeur")]
+        [System.Web.Http.Route("v1/ecurie/CoursProfesseurs")]
+        public IHttpActionResult GetEventsProfesseur()
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            var prenom = ((ClaimsIdentity)User.Identity).
+                FindFirst("prenom").Value;
+            var nom = identity.Claims
+                .FirstOrDefault(c => c.Type == "nom").Value;
+            var events = BL.getAllCoursEvent().Where(x => x.professeur ==  prenom+" "+nom);
+            return Json(events);
+        }
     }
 }

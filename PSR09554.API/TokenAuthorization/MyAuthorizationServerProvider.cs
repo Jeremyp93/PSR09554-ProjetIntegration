@@ -24,6 +24,8 @@ namespace PSR09554.API.TokenAuthorization
                 identity.AddClaim(new Claim(ClaimTypes.Role, user.role));
                 identity.AddClaim(new Claim(ClaimTypes.Name, user.username));
                 identity.AddClaim(new Claim("id", user.id));
+                identity.AddClaim(new Claim("prenom", user.prenom));
+                identity.AddClaim(new Claim("nom", user.nom));
                 context.Validated(identity);
             }
         }

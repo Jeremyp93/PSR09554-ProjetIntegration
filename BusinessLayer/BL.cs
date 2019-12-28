@@ -242,7 +242,9 @@ namespace BusinessLayer
                         id = user.Id,
                         username = user.UserName,
                         hash = user.PasswordHash,
-                        role = user.Name
+                        role = user.Name,
+                        prenom = user.Prenom,
+                        nom = user.Nom
                     });
                 }
 

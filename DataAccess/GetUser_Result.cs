@@ -17,5 +17,7 @@ namespace DataAccess
         public string UserName { get; set; }
         public string PasswordHash { get; set; }
         public string Name { get; set; }
+        public string Prenom { get; set; }
+        public string Nom { get; set; }
     }
 }

@@ -4,8 +4,8 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="213cb9041a7946ba8a92f4ba53050457" Name="Diagram1">
-        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.AspNetRole" Width="1.5" PointX="2.75" PointY="10" IsExpanded="true" />
+      <Diagram DiagramId="3e659422d52b44ba9c1f92cf67b8f4bd" Name="Diagram1">
+        <EntityTypeShape EntityType="ExamenProjetIntegrationModel.AspNetRole" Width="1.5" PointX="2.75" PointY="10.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ExamenProjetIntegrationModel.AspNetUser" Width="1.5" PointX="5" PointY="9" IsExpanded="true" />
         <EntityTypeShape EntityType="ExamenProjetIntegrationModel.Cheval" Width="1.5" PointX="0.75" PointY="12.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ExamenProjetIntegrationModel.ChevalCour" Width="1.5" PointX="3" PointY="4.75" IsExpanded="true" />
