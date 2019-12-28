@@ -143,6 +143,7 @@ namespace PSR09554.Webb.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult UploadFiles(string id)
         {
@@ -193,7 +194,7 @@ namespace PSR09554.Webb.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Client")]
         public async Task<ActionResult> GetReservationUser()
         {
             if (Session["TokenNumber"] != null)

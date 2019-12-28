@@ -224,7 +224,7 @@ namespace PSR09554.API.Controllers
             }
         }
 
-        [System.Web.Http.Authorize]
+        [System.Web.Http.Authorize(Roles = "Client")]
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("v1/ecurie/MesReservations")]
         public IHttpActionResult GetReservationUser()
@@ -236,7 +236,7 @@ namespace PSR09554.API.Controllers
             return Json(reservation);
         }
 
-        [System.Web.Http.Authorize]
+        [System.Web.Http.Authorize(Roles = "Client")]
         [System.Web.Http.HttpDelete]
         [System.Web.Http.Route("v1/ecurie/DeleteReservation")]
         public IHttpActionResult DeleteReservation([FromUri] string id)
