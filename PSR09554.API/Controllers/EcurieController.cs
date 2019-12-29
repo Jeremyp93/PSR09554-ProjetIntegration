@@ -263,11 +263,22 @@ namespace PSR09554.API.Controllers
         public IHttpActionResult GetEventsProfesseur()
         {
             var identity = (ClaimsIdentity)User.Identity;
-            var prenom = ((ClaimsIdentity)User.Identity).
+            var prenom = identity.
                 FindFirst("prenom").Value;
-            var nom = identity.Claims
-                .FirstOrDefault(c => c.Type == "nom").Value;
-            var events = BL.getAllCoursEvent().Where(x => x.professeur ==  prenom+" "+nom);
+            var nom = identity.
+                FindFirst("nom").Value;
+            var events = BL.getAllCoursEvent().Where(x => x.professeur ==  prenom+" "+nom).ToList();
+            for (int i = 0; i < events.Count(); i++)
+            {
+                var nomComplet = string.Empty;
+                var participant = BL.getParticipantsCours(events[i].id);
+                foreach (var y in participant)
+                {
+                    nomComplet = nomComplet + y.prenom + " " + y.nom + ";";
+                }
+
+                events[i].professeur = nomComplet;
+            }
             return Json(events);
         }
     }

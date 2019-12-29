@@ -67,10 +67,10 @@
                 <p id="pDetails"></p>
             </div>
             <div class="modal-footer">
-                @if (this.User.IsInRole("Professeur"))
+                @*@if (this.User.IsInRole("Professeur"))
                 {
                     <button id="deleteButton" type="button" class="btn btn-danger">Supprimer</button>
-                }
+                }*@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
             </div>
         </div>
@@ -113,13 +113,13 @@
                 url: '@gamePath' + 'CoursProfesseurs',
                 headers: headers,
                 type: 'GET',
-                success: function(data) {
+                success: function (data) {
                     $.each(data,
-                        function(i, v) {
+                        function (i, v) {
                             if (v.nombreMax != 0) {
                                 events.push({
                                     title: v.titre,
-                                    description: v.description + ";" + v.professeur + ";" + v.nombreMax + ";" + v.id,
+                                    description: v.professeur,
                                     start: moment(v.coursDebut),
                                     end: moment(v.coursFin),
                                     color: v.couleur,
@@ -128,7 +128,7 @@
                             } else {
                                 events.push({
                                     title: v.titre,
-                                    description: v.description + ";" + v.professeur + ";" + v.nombreMax + ";" + v.id,
+                                    description: v.professeur,
                                     start: moment(v.coursDebut),
                                     end: moment(v.coursFin),
                                     color: 'gray',
@@ -170,43 +170,44 @@
                     eventColor: '#378006',
                     events: events,
                     eventClick: function(calEvent, jsEvent, view) {
-                        $('#myModal #eventTitle').text(calEvent.title);
-                        var niveau = calEvent.description.split(";")[0];
-                        var professeur = calEvent.description.split(";")[1];
-                        var place = calEvent.description.split(";")[2];
-                        idCours = calEvent.description.split(";")[3];
+                        $('#myModal #eventTitle').text("Liste d'inscrit :");
                         var $description = $('<div/>');
-                        $description.append($('<p/>')
-                            .html('<b>Début du cours: </b>' + calEvent.start.format("DD-MM-YYYY HH:mm")));
-                        $description.append($('<p/>')
-                            .html('<b>Fin du cours: </b>' + calEvent.end.format("DD-MM-YYYY HH:mm")));
-                        $description.append($('<p/>').html('<b>Niveau: </b>' + niveau));
-                        $description.append($('<p/>').html('<b>Professeur: </b>' + professeur));
-                        if (place != 0)
-                            $description.append($('<p/>').html('<b>Places disponnibles: </b>' + place));
-                        else
-                            $description.append($('<p/>').html('<b>Places disponnibles: COMPLET</b>'));
-                        $('#myModal #pDetails').empty().html($description);
-                        $('#deleteButton').show();
-                        $('#myModal').modal();
-                        $('#deleteButton').click(function() {
-                            DeleteCours(function () {
-                                if (!error) {
-                                    $('#calendar').fullCalendar('removeEvents', calEvent._id);
-                                } else {
-                                    calEvent._id = "";
-                                }
+                        var participants = calEvent.description.split(';');
+                        var arr = [];
+                        $.each(participants, function (i, val) {
+                            if (val)
+                                arr.push(val);
+                        });
+                        if (!jQuery.isEmptyObject(arr)) {
+                            $.each(arr, function(i, val) {
+                                $description.append($('<p/>')
+                                    .html('- ' + val));
                             });
-                        });
-                    },
-                    eventAfterRender: function(event, element) {
-                        $(element).tooltip({
-                            title: event.description.split(";")[1] +
-                                " - " +
-                                event.description.split(";")[2],
-                            container: "body"
-                        });
+                        }
+                        else
+                            $description.append($('<p/>')
+                                .html('Pas encore d inscrit'));
+                        $('#myModal #pDetails').empty().html($description);
+                        //$('#deleteButton').show();
+                        $('#myModal').modal();
+                        //$('#deleteButton').click(function() {
+                        //    DeleteCours(function() {
+                        //        if (!error) {
+                        //            $('#calendar').fullCalendar('removeEvents', calEvent._id);
+                        //        } else {
+                        //            calEvent._id = "";
+                        //        }
+                        //    });
+                        //});
                     }
+                    //eventAfterRender: function(event, element) {
+                    //    $(element).tooltip({
+                    //        title: event.description.split(";")[1] +
+                    //            " - " +
+                    //            event.description.split(";")[2],
+                    //        container: "body"
+                    //    });
+                    //}
                 });
 
                 function renderViewColumns(view, element) {
@@ -222,7 +223,7 @@
             }
         }
 
-        function DeleteCours(_callback) {
+        @*function DeleteCours(_callback) {
             $.ajax({
                 url: '@gamePath' + 'DeleteCours?id=' + idCours,
                 headers: headers,
@@ -243,7 +244,7 @@
                     _callback();
                 }
             });
-        }
+        }*@
     </script>
 }
 

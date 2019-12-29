@@ -550,5 +550,42 @@ namespace BusinessLayer
                 throw e;
             }
         }
+
+        public static List<ParticpantsCoursModel> getParticipantsCours(Guid idCours)
+        {
+            try
+            {
+                var lstToReturn = new List<ParticpantsCoursModel>();
+                foreach (var participant in Data.GetParticipantsCours(idCours))
+                {
+                    lstToReturn.Add(new ParticpantsCoursModel
+                    {
+                        idUser = participant.Id,
+                        username = participant.UserName,
+                        prenom = participant.Prenom,
+                        nom = participant.Nom,
+                        idCours = participant.COURS_id,
+                        idReservation = participant.RESERVATION_id
+                    });
+                }
+
+                return lstToReturn;
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
     }
 }

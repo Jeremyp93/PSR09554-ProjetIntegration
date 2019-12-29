@@ -245,5 +245,14 @@ namespace DataAccess
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UpdateCoursParticipant", idCoursParameter);
         }
+    
+        public virtual ObjectResult<GetParticipantsCours_Result> GetParticipantsCours(Nullable<System.Guid> idCours)
+        {
+            var idCoursParameter = idCours.HasValue ?
+                new ObjectParameter("idCours", idCours) :
+                new ObjectParameter("idCours", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetParticipantsCours_Result>("GetParticipantsCours", idCoursParameter);
+        }
     }
 }

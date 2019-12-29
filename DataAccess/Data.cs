@@ -163,5 +163,14 @@ namespace DataAccess
                 db.DeleteReservation(idReservation);
             }
         }
+
+        public static List<GetParticipantsCours_Result> GetParticipantsCours(Guid idCours)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                var lstToReturn = db.GetParticipantsCours(idCours).ToList();
+                return lstToReturn;
+            }
+        }
     }
 }
