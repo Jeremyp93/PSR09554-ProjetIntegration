@@ -361,14 +361,18 @@ namespace BusinessLayer
                         newProf.prenom = professeur.PROFESSEUR_prenom;
                         newProf.nom = professeur.PROFESSEUR_nom;
                         newProf.typeCours = professeur.TYPECOURS_libelle;
-                        newProf.discipline = professeur.TYPECOURS_discipline;
+                        if (newProf.typeCours != "Randonnee")
+                            newProf.discipline = professeur.TYPECOURS_discipline;
                         newProf.niveau = professeur.NIVEAU_libelle;
                         foreach (var prof in Data.GetProfesseurTable().Where(x => x.PROFESSEUR_id == newProf.id))
                         {
                             if (!newProf.typeCours.Contains(prof.TYPECOURS_libelle))
                                 newProf.typeCours = newProf.typeCours + ", " + prof.TYPECOURS_libelle;
-                            if (!newProf.discipline.Contains(prof.TYPECOURS_discipline))
-                                newProf.discipline = newProf.discipline + ", " + prof.TYPECOURS_discipline;
+                            if (newProf.typeCours != "Randonnee")
+                            {
+                                if (!newProf.discipline.Contains(prof.TYPECOURS_discipline))
+                                    newProf.discipline = newProf.discipline + ", " + prof.TYPECOURS_discipline;
+                            }
                             if (!newProf.niveau.Contains(prof.NIVEAU_libelle))
                                 newProf.niveau = newProf.niveau + ", " + prof.NIVEAU_libelle;
                         }
@@ -570,6 +574,29 @@ namespace BusinessLayer
                 }
 
                 return lstToReturn;
+            }
+            catch (Exception e)
+            {
+                var sqlex = e.InnerException as SqlException;
+
+                if (sqlex != null)
+                {
+                    switch (sqlex.Number)
+                    {
+                        default:
+                            throw new Exception(sqlex.Number + " - " + sqlex.Message);
+                    }
+                }
+
+                throw e;
+            }
+        }
+
+        public static void addUtilisateur(string email, string passwordHash, string prenom, string nom)
+        {
+            try
+            {
+                Data.AddUtilisateur(email, passwordHash, prenom, nom);
             }
             catch (Exception e)
             {

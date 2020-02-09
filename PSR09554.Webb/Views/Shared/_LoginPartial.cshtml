@@ -21,6 +21,7 @@
                 {
                     <li>@Html.ActionLink("Ajouter des cours", "AjouterCours", "Ecurie", new { area = "" }, new { @class = "dropdown-item" })</li>
                     <li>@Html.ActionLink("Ajouter des professeurs", "AjouterProfesseur", "Ecurie", new { area = "" }, new { @class = "dropdown-item" })</li>
+                    <li>@Html.ActionLink("Gérer utilisateur", "GestionUtilisateur", "Ecurie", new { area = "" }, new { @class = "dropdown-item" })</li>
                 }
                 <li><a href="@Url.Action("ChangePassword","Manage")">Modifier votre mot de passe</a></li>
                 <li><a href="javascript:document.getElementById('logoutForm').submit()">Déconnecter</a></li>

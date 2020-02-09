@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Transactions;
-using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
-using System.Web.Security;
 using BusinessLayer;
 using PSR09554.API.Models;
-using Microsoft.AspNet.Identity;
+using PSR09554.Hash;
 
 namespace PSR09554.API.Controllers
 {
@@ -199,12 +194,22 @@ namespace PSR09554.API.Controllers
                     if (ModelState.IsValid)
                     {
                         var idProfesseur = BL.addProfesseur(professeur.prenom, professeur.nom);
-
-                        foreach (var discipline in professeur.discipline)
+                        BL.addUtilisateur(professeur.prenom.ToLower()+"@scotex.be", MyHash.HashPassword(professeur.prenom.ToLower()), professeur.prenom, professeur.nom);
+                        if (professeur.discipline.Length != 0)
+                        {
+                            foreach (var discipline in professeur.discipline)
+                            {
+                                foreach (var niveau in professeur.niveau)
+                                {
+                                    BL.addProfesseurCours(idProfesseur, professeur.typeCours, discipline, niveau);
+                                }
+                            }
+                        }
+                        else
                         {
                             foreach (var niveau in professeur.niveau)
                             {
-                                BL.addProfesseurCours(idProfesseur, professeur.typeCours, discipline, niveau);
+                                BL.addProfesseurCours(idProfesseur, professeur.typeCours, null, niveau);
                             }
                         }
                         txscope.Complete();
@@ -267,7 +272,7 @@ namespace PSR09554.API.Controllers
                 FindFirst("prenom").Value;
             var nom = identity.
                 FindFirst("nom").Value;
-            var events = BL.getAllCoursEvent().Where(x => x.professeur ==  prenom+" "+nom).ToList();
+            var events = BL.getAllCoursEvent().Where(x => x.professeur == prenom+" "+nom).ToList();
             for (int i = 0; i < events.Count(); i++)
             {
                 var nomComplet = string.Empty;

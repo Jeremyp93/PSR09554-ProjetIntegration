@@ -717,6 +717,7 @@
     <Content Include="Views\Ecurie\Professeurs.cshtml" />
     <Content Include="Views\Ecurie\Reservation.cshtml" />
     <Content Include="Views\Ecurie\HorairesProfesseurs.cshtml" />
+    <Content Include="Views\Ecurie\GestionUtilisateur.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

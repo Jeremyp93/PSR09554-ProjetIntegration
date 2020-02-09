@@ -293,6 +293,12 @@
           <Parameter Name="discipline" Type="varchar" Mode="In" />
           <Parameter Name="niveau" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="AjouterUtilisateur" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="passwordHash" Type="varchar" Mode="In" />
+          <Parameter Name="prenom" Type="varchar" Mode="In" />
+          <Parameter Name="nom" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="DeleteCours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="idCours" Type="uniqueidentifier" Mode="In" />
         </Function>
@@ -781,7 +787,13 @@
           <Parameter Name="idCours" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="GetParticipantsCours" ReturnType="Collection(ExamenProjetIntegrationModel.GetParticipantsCours_Result)">
-            <Parameter Name="idCours" Mode="In" Type="Guid" />
+          <Parameter Name="idCours" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="AjouterUtilisateur">
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="passwordHash" Mode="In" Type="String" />
+            <Parameter Name="prenom" Mode="In" Type="String" />
+            <Parameter Name="nom" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GetAllCours_Result">
@@ -1107,6 +1119,7 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="AjouterUtilisateur" FunctionName="ExamenProjetIntegrationModel.Store.AjouterUtilisateur" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

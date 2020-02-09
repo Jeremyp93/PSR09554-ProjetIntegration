@@ -172,5 +172,13 @@ namespace DataAccess
                 return lstToReturn;
             }
         }
+
+        public static void AddUtilisateur(string email, string passwordHash, string prenom, string nom)
+        {
+            using (ExamenProjetIntegrationEntities db = new ExamenProjetIntegrationEntities())
+            {
+                db.AjouterUtilisateur(email, passwordHash, prenom, nom);
+            }
+        }
     }
 }

@@ -254,5 +254,26 @@ namespace DataAccess
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetParticipantsCours_Result>("GetParticipantsCours", idCoursParameter);
         }
+    
+        public virtual int AjouterUtilisateur(string email, string passwordHash, string prenom, string nom)
+        {
+            var emailParameter = email != null ?
+                new ObjectParameter("email", email) :
+                new ObjectParameter("email", typeof(string));
+    
+            var passwordHashParameter = passwordHash != null ?
+                new ObjectParameter("passwordHash", passwordHash) :
+                new ObjectParameter("passwordHash", typeof(string));
+    
+            var prenomParameter = prenom != null ?
+                new ObjectParameter("prenom", prenom) :
+                new ObjectParameter("prenom", typeof(string));
+    
+            var nomParameter = nom != null ?
+                new ObjectParameter("nom", nom) :
+                new ObjectParameter("nom", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AjouterUtilisateur", emailParameter, passwordHashParameter, prenomParameter, nomParameter);
+        }
     }
 }
